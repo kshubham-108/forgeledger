@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import {
+  COHORT_UNLOCK_THRESHOLD,
   competencyLabels,
   disciplineLabels,
   getBuildsForModuleCodes,
   getModuleById,
+  getRadarItemsForModuleCodes,
 } from "@/lib/seed";
 import { useLedger, useProfile } from "@/lib/use-store";
 
@@ -21,7 +23,7 @@ export function WeeklyPlan() {
           Pick your university and modules to see this week&apos;s builds.
         </p>
         <Link
-          href="/start"
+          href="/"
           className="mt-6 inline-block rounded-sm bg-biro px-5 py-2.5 text-sm font-medium text-white hover:bg-biro-deep"
         >
           Open your ledger
@@ -35,8 +37,12 @@ export function WeeklyPlan() {
     .filter((m) => m !== undefined);
   const moduleCodes = chosenModules.map((m) => m.code);
   const builds = getBuildsForModuleCodes(moduleCodes);
+  const radar = getRadarItemsForModuleCodes(moduleCodes);
   const completedSlugs = new Set(ledger.map((e) => e.buildSlug));
   const moduleCodeSet = new Set(moduleCodes);
+
+  const buildsThisWeek = Math.max(1, Math.floor((profile.hoursPerWeek * 60) / 25));
+  const completedThisPlan = builds.filter((b) => completedSlugs.has(b.slug)).length;
 
   return (
     <div>
@@ -53,6 +59,41 @@ export function WeeklyPlan() {
           {ledger.length} build{ledger.length === 1 ? "" : "s"} in your ledger
         </Link>
       </p>
+
+      {/* Personal progress — measured against your own plan, not a cohort */}
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
+        <div className="border border-rule bg-card px-4 py-3">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+            Your pace
+          </p>
+          <p className="mt-1 text-sm text-ink">
+            <span className="font-mono text-lg text-biro">{buildsThisWeek}</span>{" "}
+            build{buildsThisWeek === 1 ? "" : "s"} fit in your{" "}
+            {profile.hoursPerWeek}h this week
+          </p>
+        </div>
+        <div className="border border-rule bg-card px-4 py-3">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+            Module coverage
+          </p>
+          <p className="mt-1 text-sm text-ink">
+            <span className="font-mono text-lg text-biro">
+              {completedThisPlan}/{builds.length}
+            </span>{" "}
+            matched builds done
+          </p>
+        </div>
+        <div className="border border-dashed border-rule bg-paper px-4 py-3">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+            Cohort comparison
+          </p>
+          <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+            Locked until {COHORT_UNLOCK_THRESHOLD}+ students in your discipline
+            are on the ledger. We won&apos;t show you a percentile computed
+            from nobody.
+          </p>
+        </div>
+      </section>
 
       <section className="margin-ruled mt-10">
         <div className="border-b-2 border-ink pb-2">
@@ -114,14 +155,77 @@ export function WeeklyPlan() {
         )}
       </section>
 
-      <section className="mt-10 border border-dashed border-rule bg-card px-5 py-4">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
-          Coming in the next release
-        </p>
-        <p className="mt-2 text-sm text-ink-muted">
-          A weekly radar digest: new AI advances matched to{" "}
-          {moduleCodes.slice(0, 2).join(" and ")}
-          {moduleCodes.length > 2 ? " and more" : ""}, each with a fresh build.
+      {/* The radar → build loop: advance, module, build — end to end */}
+      <section className="margin-ruled mt-10">
+        <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
+            Radar · new for your modules
+          </h2>
+          <span className="font-mono text-xs text-ink-muted">
+            curated weekly
+          </span>
+        </div>
+        {radar.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-ink-muted">
+            No radar items match your modules yet. The feed covers Psychology,
+            Law, Nursing and History first.
+          </p>
+        ) : (
+          <ul>
+            {radar.map((item) => {
+              const done = completedSlugs.has(item.buildSlug);
+              return (
+                <li
+                  key={item.id}
+                  className="border-b border-rule bg-card px-4 py-4 sm:px-6"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-sm border border-rule bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink-muted">
+                      {item.sourceType}
+                    </span>
+                    {item.moduleCodes
+                      .filter((c) => moduleCodeSet.has(c))
+                      .map((code) => (
+                        <span
+                          key={code}
+                          className="rounded-sm bg-biro-faint px-1.5 py-0.5 font-mono text-[11px] text-biro-deep"
+                        >
+                          {code}
+                        </span>
+                      ))}
+                    <span className="font-mono text-[11px] text-ink-muted">
+                      {item.date}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm font-medium leading-snug text-ink">
+                    {item.title}
+                  </p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink-muted">
+                    {item.whyItMatters}
+                  </p>
+                  <div className="mt-3">
+                    {done ? (
+                      <span className="font-mono text-[11px] uppercase tracking-wide text-verified">
+                        Linked build already in your ledger
+                      </span>
+                    ) : (
+                      <Link
+                        href={`/builds/${item.buildSlug}`}
+                        className="font-mono text-xs text-biro hover:text-biro-deep"
+                      >
+                        Try this advance → 25-min build
+                      </Link>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        <p className="px-4 py-3 text-xs text-ink-muted sm:px-6">
+          Pilot feed: items are hand-curated for launch modules. The automated
+          daily ingest (arXiv, vendor releases, regulator guidance) ships in
+          the next release.
         </p>
       </section>
     </div>

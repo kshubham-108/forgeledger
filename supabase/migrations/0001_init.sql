@@ -1,4 +1,4 @@
--- ForgeLedger MVP 0 schema
+-- Stamped MVP 0 schema
 -- Matches src/lib/types.ts; demo localStorage store swaps for these tables.
 
 create extension if not exists vector;

@@ -20,9 +20,9 @@ const splineMono = Spline_Sans_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ForgeLedger — prove your AI capability, module by module",
+  title: "Stamped — prove your AI skills, one build at a time",
   description:
-    "A verified ledger of AI micro-builds mapped to your real university modules. Built for UK undergraduates.",
+    "Short AI builds mapped to your real modules. Every one you complete gets stamped as proof. Built for UK undergraduates.",
 };
 
 export default function RootLayout({
@@ -42,7 +42,7 @@ export default function RootLayout({
               href="/"
               className="font-display text-xl tracking-tight text-ink"
             >
-              Forge<span className="text-biro">Ledger</span>
+              Stamped
             </Link>
             <div className="flex items-baseline gap-6 text-sm">
               <Link
@@ -52,13 +52,7 @@ export default function RootLayout({
                 This week
               </Link>
               <Link href="/ledger" className="text-ink-muted hover:text-ink">
-                My ledger
-              </Link>
-              <Link
-                href="/start"
-                className="font-mono text-xs uppercase tracking-wider text-biro hover:text-biro-deep"
-              >
-                Open a ledger →
+                My stamps
               </Link>
             </div>
           </nav>
@@ -67,8 +61,8 @@ export default function RootLayout({
         <footer className="border-t border-rule">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-1 px-6 py-6 text-xs text-ink-muted sm:flex-row sm:justify-between">
             <p>
-              ForgeLedger supplements your degree. It never completes assessed
-              work for you.
+              Stamped supplements your degree. It never completes assessed work
+              for you.
             </p>
             <p className="font-mono">MVP 0 · demo data, stored on this device</p>
           </div>

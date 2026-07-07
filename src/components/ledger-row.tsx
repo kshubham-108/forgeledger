@@ -1,5 +1,5 @@
-import { competencyLabels } from "@/lib/seed";
-import type { Competency } from "@/lib/types";
+import { competencyLabels, evidenceStatusLabels } from "@/lib/seed";
+import type { Competency, EvidenceStatus } from "@/lib/types";
 
 type LedgerRowProps = {
   serial: string;
@@ -8,13 +8,21 @@ type LedgerRowProps = {
   competencies: Competency[];
   date: string;
   minutes?: number;
+  evidenceStatus?: EvidenceStatus;
   animate?: boolean;
 };
 
 /*
   The signature element: a stamped ledger row.
-  Monospace serial, module-code chip, competency tags, date stamp.
+  The stamp states provenance honestly — what the entry actually is
+  (self-assessed / artifact attached), never a verification we can't back.
 */
+const statusStyles: Record<EvidenceStatus, string> = {
+  "self-assessed": "border-rule bg-paper text-ink-muted",
+  "artifact-attached": "border-verified bg-verified-faint text-verified",
+  "externally-verified": "border-biro bg-biro-faint text-biro-deep",
+};
+
 export function LedgerRow({
   serial,
   title,
@@ -22,6 +30,7 @@ export function LedgerRow({
   competencies,
   date,
   minutes,
+  evidenceStatus = "artifact-attached",
   animate = false,
 }: LedgerRowProps) {
   return (
@@ -43,8 +52,10 @@ export function LedgerRow({
         </div>
       </div>
       <div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
-        <span className="inline-flex items-center gap-1 rounded-sm border border-verified bg-verified-faint px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-wide text-verified">
-          Verified build
+        <span
+          className={`inline-flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-wide ${statusStyles[evidenceStatus]}`}
+        >
+          {evidenceStatusLabels[evidenceStatus]}
         </span>
         <span className="font-mono text-[11px] text-ink-muted">
           {date}

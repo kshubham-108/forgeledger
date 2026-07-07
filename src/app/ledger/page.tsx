@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LedgerView } from "@/components/ledger-view";
 
 export const metadata: Metadata = {
-  title: "My ledger — ForgeLedger",
+  title: "My stamps — Stamped",
 };
 
 export default function LedgerPage() {

@@ -21,7 +21,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const build = getBuildBySlug(slug);
-  return { title: build ? `${build.title} — ForgeLedger` : "ForgeLedger" };
+  return { title: build ? `${build.title} — Stamped` : "Stamped" };
 }
 
 export default async function BuildPage({ params }: PageProps) {
@@ -43,22 +43,85 @@ export default async function BuildPage({ params }: PageProps) {
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2">
-        {build.competencies.map((c) => (
-          <span
-            key={c}
-            className="rounded-sm border border-rule bg-card px-2 py-1 text-[11px] text-ink"
-          >
-            {competencyLabels[c]}
-          </span>
-        ))}
+        {build.competencies.map((c) => {
+          const weight = build.competencyScores[c] ?? 1;
+          return (
+            <span
+              key={c}
+              className="rounded-sm border border-rule bg-card px-2 py-1 text-[11px] text-ink"
+            >
+              {competencyLabels[c]}{" "}
+              <span
+                className="font-mono text-biro"
+                title={`Training weight ${weight} of 3`}
+              >
+                {"●".repeat(weight)}
+                {"○".repeat(3 - weight)}
+              </span>
+            </span>
+          );
+        })}
       </div>
 
-      <section className="mt-10">
+      {/* What you leave with, and why watching a video wouldn't get you there */}
+      <section className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="border border-rule bg-card px-4 py-4">
+          <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+            You leave with
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink">
+            {build.deliverable}
+          </p>
+        </div>
+        <div className="border border-rule bg-card px-4 py-4">
+          <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+            Why not just YouTube?
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink">
+            {build.whyNotYoutube}
+          </p>
+        </div>
+      </section>
+
+      {/* Integrity gate — structural, before the steps, not a footnote */}
+      <section className="mt-8 border-l-2 border-verified bg-verified-faint px-4 py-4">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-verified">
+          Integrity gate
+        </p>
+        <dl className="mt-3 flex flex-col gap-3 text-sm leading-relaxed">
+          <div>
+            <dt className="font-medium text-ink">This build trains</dt>
+            <dd className="mt-0.5 text-ink-muted">{build.integrity.trains}</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-ink">It must not be used for</dt>
+            <dd className="mt-0.5 text-ink-muted">{build.integrity.notFor}</dd>
+          </div>
+          <div>
+            <dt className="font-medium text-ink">
+              Verification built into the exercise
+            </dt>
+            <dd className="mt-0.5 text-ink-muted">
+              {build.integrity.verificationStep}
+            </dd>
+          </div>
+        </dl>
+        <p className="mt-3 border-t border-verified/30 pt-3 text-xs text-ink-muted">
+          This is AI literacy your university should teach but doesn&apos;t.
+          Stamped never completes assessed work — you confirm this before
+          the entry is stamped.
+        </p>
+      </section>
+
+      <section className="mt-8">
         <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
           Free tools you need
         </h2>
         <p className="mt-2 text-sm text-ink-muted">
           {build.freeTools.join(" · ")}
+        </p>
+        <p className="mt-1 text-xs text-ink-muted">
+          Nothing paywalled on the core path.
         </p>
       </section>
 
@@ -82,20 +145,12 @@ export default async function BuildPage({ params }: PageProps) {
         </ol>
       </section>
 
-      <section className="mt-8 border-l-2 border-verified bg-verified-faint px-4 py-3">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-verified">
-          Integrity note
-        </p>
-        <p className="mt-1 text-sm leading-relaxed text-ink">
-          {build.ethicsNote}
-        </p>
-      </section>
-
       <CompleteBuildForm
         buildSlug={build.slug}
         moduleCodes={build.moduleCodes}
         artifactPrompt={build.artifactPrompt}
         estMinutes={build.estMinutes}
+        competencies={build.competencies}
       />
     </div>
   );

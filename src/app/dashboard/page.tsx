@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { WeeklyPlan } from "@/components/weekly-plan";
 
 export const metadata: Metadata = {
-  title: "This week — ForgeLedger",
+  title: "This week — Stamped",
 };
 
 export default function DashboardPage() {

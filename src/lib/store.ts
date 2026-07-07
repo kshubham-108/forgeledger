@@ -6,8 +6,8 @@ import type { LedgerEntry, Profile } from "./types";
   subscribers so useSyncExternalStore stays consistent.
 */
 
-const PROFILE_KEY = "fl.v1.profile";
-const LEDGER_KEY = "fl.v1.ledger";
+const PROFILE_KEY = "st.v1.profile";
+const LEDGER_KEY = "st.v1.ledger";
 
 let profileCache: Profile | null | undefined;
 let ledgerCache: LedgerEntry[] | undefined;
@@ -50,13 +50,22 @@ export function getLedger(): LedgerEntry[] {
 const EMPTY_LEDGER: LedgerEntry[] = [];
 
 export function addLedgerEntry(
-  entry: Omit<LedgerEntry, "id" | "serial" | "completedAt">,
+  entry: Omit<LedgerEntry, "id" | "serial" | "completedAt" | "evidenceStatus">,
 ): LedgerEntry {
   const existing = getLedger();
+  /*
+    Provenance is derived, never claimed: an entry with a pasted artifact or
+    link is "artifact-attached"; anything less is "self-assessed". External
+    verification is a later tier and is never assigned here.
+  */
+  const hasArtifact =
+    entry.artifactText.trim().length >= 40 ||
+    (entry.artifactLink ?? "").trim().length > 0;
   const full: LedgerEntry = {
     ...entry,
     id: crypto.randomUUID(),
-    serial: `FL-${String(existing.length + 1).padStart(4, "0")}`,
+    serial: `ST-${String(existing.length + 1).padStart(4, "0")}`,
+    evidenceStatus: hasArtifact ? "artifact-attached" : "self-assessed",
     completedAt: new Date().toISOString(),
   };
   ledgerCache = [...existing, full];

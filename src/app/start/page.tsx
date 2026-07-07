@@ -1,20 +1,16 @@
-import type { Metadata } from "next";
-import { OnboardingWizard } from "@/components/onboarding-wizard";
-
-export const metadata: Metadata = {
-  title: "Open your ledger — ForgeLedger",
-};
+import { InlineOnboarding } from "@/components/inline-onboarding";
 
 export default function StartPage() {
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-12">
-      <p className="font-mono text-xs uppercase tracking-widest text-biro">
-        Open a ledger
+    <div className="mx-auto w-full max-w-xl px-6 py-16 sm:py-24">
+      <h1 className="font-display text-3xl text-ink">Open your ledger</h1>
+      <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+        Three quick questions so your builds match the modules you&rsquo;re
+        actually on.
       </p>
-      <h1 className="mt-3 font-display text-3xl text-ink">
-        Three steps, then your first build
-      </h1>
-      <OnboardingWizard />
+      <div className="mt-8">
+        <InlineOnboarding />
+      </div>
     </div>
   );
 }

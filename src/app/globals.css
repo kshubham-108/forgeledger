@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
-  ForgeLedger design tokens — "student stationery meets institutional registry"
+  Stamped design tokens — "student stationery meets institutional registry"
   paper:    cool ledger white (not cream)
   ink:      near-black writing ink
   biro:     ballpoint blue — primary accent
@@ -45,20 +45,6 @@ body {
   border-radius: 2px;
 }
 
-/* Highlighter swipe — the one loud gesture on the page */
-.mark-swipe {
-  background-image: linear-gradient(
-    to bottom,
-    transparent 42%,
-    var(--color-marker) 42%,
-    var(--color-marker) 88%,
-    transparent 88%
-  );
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding-inline: 0.08em;
-}
-
 /* Notebook margin rule: thin vertical biro line down the left of ledger blocks */
 .margin-ruled {
   position: relative;
@@ -99,8 +85,92 @@ body {
   animation-delay: 0.16s;
 }
 
+/*
+  Landing backdrop — quiet motion behind the hero.
+  Ruled paper lines drift downward, two ink washes breathe, and a large
+  stamp ring rotates once every couple of minutes. Everything sits far
+  below text contrast thresholds.
+*/
+.backdrop-rules {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    color-mix(in srgb, var(--color-rule) 55%, transparent) 31px,
+    color-mix(in srgb, var(--color-rule) 55%, transparent) 32px
+  );
+  animation: rules-drift 24s linear infinite;
+}
+
+@keyframes rules-drift {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 32px;
+  }
+}
+
+.backdrop-margin {
+  left: clamp(1.5rem, 6vw, 5rem);
+  width: 1px;
+  background: color-mix(in srgb, var(--color-biro) 22%, transparent);
+}
+
+.backdrop-wash {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  animation: wash-drift 18s ease-in-out infinite alternate;
+}
+.backdrop-wash-a {
+  top: -10%;
+  right: -5%;
+  width: 34rem;
+  height: 34rem;
+  background: color-mix(in srgb, var(--color-biro) 7%, transparent);
+}
+.backdrop-wash-b {
+  bottom: -20%;
+  left: 10%;
+  width: 28rem;
+  height: 28rem;
+  background: color-mix(in srgb, var(--color-marker) 12%, transparent);
+  animation-delay: -9s;
+}
+
+@keyframes wash-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-3rem, 2rem, 0) scale(1.08);
+  }
+}
+
+.backdrop-stamp-ring {
+  position: absolute;
+  top: 50%;
+  right: clamp(-8rem, -4vw, -2rem);
+  width: 26rem;
+  height: 26rem;
+  margin-top: -13rem;
+  border-radius: 50%;
+  border: 1.5px dashed color-mix(in srgb, var(--color-biro) 14%, transparent);
+  animation: ring-turn 140s linear infinite;
+}
+
+@keyframes ring-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .stamp-in {
+  .stamp-in,
+  .backdrop-rules,
+  .backdrop-wash,
+  .backdrop-stamp-ring {
     animation: none;
   }
 }
