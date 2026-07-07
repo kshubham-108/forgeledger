@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  ForgeLedger design tokens — "student stationery meets institutional registry"
+  paper:    cool ledger white (not cream)
+  ink:      near-black writing ink
+  biro:     ballpoint blue — primary accent
+  marker:   highlighter yellow — used sparingly, as a text swipe
+  verified: completion stamp green
+  rule:     ledger ruling lines
+*/
+@theme {
+  --color-paper: #f7f8f5;
+  --color-ink: #14181f;
+  --color-ink-muted: #5a6068;
+  --color-biro: #2442c8;
+  --color-biro-deep: #1b3199;
+  --color-biro-faint: #e6eafc;
+  --color-marker: #f5e960;
+  --color-verified: #216c51;
+  --color-verified-faint: #e3efe9;
+  --color-rule: #d8dcd3;
+  --color-card: #fdfefb;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-young-serif);
+  --font-sans: var(--font-public-sans);
+  --font-mono: var(--font-spline-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--color-marker);
+  color: var(--color-ink);
+}
+
+/* Visible keyboard focus, biro-blue */
+:focus-visible {
+  outline: 2px solid var(--color-biro);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Highlighter swipe — the one loud gesture on the page */
+.mark-swipe {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 42%,
+    var(--color-marker) 42%,
+    var(--color-marker) 88%,
+    transparent 88%
+  );
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-inline: 0.08em;
+}
+
+/* Notebook margin rule: thin vertical biro line down the left of ledger blocks */
+.margin-ruled {
+  position: relative;
+}
+.margin-ruled::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2.25rem;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-biro) 30%, transparent);
+  pointer-events: none;
+}
+
+/* Stamp settle animation for ledger entries */
+@keyframes stamp-settle {
+  0% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.stamp-in {
+  animation: stamp-settle 0.35s ease-out both;
+}
+.stamp-in:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.stamp-in:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-in {
+    animation: none;
+  }
 }

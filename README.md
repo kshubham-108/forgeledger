@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ForgeLedger
 
-## Getting Started
+A verified ledger of AI micro-builds mapped to real UK university modules. Students complete short, discipline-specific builds (25–40 min) that train them to use and verify AI within their field — every completion is stamped into a persistent ledger.
 
-First, run the development server:
+## MVP 0 (this build)
+
+- Landing page with live ledger fragment
+- Onboarding: pick university + modules (pilot catalogue: Manchester + Leeds, 10 modules, 6 disciplines)
+- Weekly plan: micro-builds matched to your modules
+- Micro-build flow: steps, integrity note, artifact submission
+- Build Ledger: stamped entries with serials, module codes, competency tags
+
+Data is stored on-device (versioned localStorage) in demo mode. The Supabase schema in `supabase/` is ready for accounts, real persistence, and the daily AI-advance radar (MVP 1).
+
+## Run it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Next.js 16 (App Router) + React 19 + TypeScript
+- Tailwind CSS v4
+- Supabase (PostgreSQL + pgvector) — migrations in `supabase/migrations/`
 
-## Learn More
+## Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/            routes: / , /start , /dashboard , /builds/[slug] , /ledger
+  components/     ledger-row (signature element), wizard, forms
+  lib/            types, seed catalogue, versioned local store
+supabase/
+  migrations/     0001_init.sql — full schema with RLS
+  seed.sql        pilot university + module catalogue
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Next (MVP 1)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Supabase auth + swap local store for Postgres
+- Daily arXiv ingest → classify → match pipeline (Edge Functions)
+- Weekly radar digest matched to enrolled modules
