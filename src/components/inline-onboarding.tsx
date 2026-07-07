@@ -3,48 +3,52 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { SnapshotRater } from "@/components/snapshot-rater";
 import {
   getBuildsForModuleCodes,
   getModuleById,
   getModulesForUniversity,
   universities,
 } from "@/lib/seed";
-import { saveProfile } from "@/lib/store";
-import { useLedger, useProfile } from "@/lib/use-store";
+import { saveProfileAndSync } from "@/lib/data-bridge";
+import { useLog, useProfile } from "@/lib/use-store";
+import type { SnapshotRatings } from "@/lib/types";
 
 const HOUR_OPTIONS = [1, 2, 3, 5];
 
 /*
   Onboarding lives in the landing hero. Questions reveal progressively as
   each answer lands, and the CTA shows a live count of matched builds so
-  every click gives feedback.
+  every click gives feedback. The final micro-step — a capability
+  snapshot — is optional and skippable in one click.
 */
 export function InlineOnboarding() {
   const router = useRouter();
   const profile = useProfile();
-  const ledger = useLedger();
+  const log = useLog();
 
   const [universityId, setUniversityId] = useState<string | null>(null);
   const [moduleIds, setModuleIds] = useState<string[]>([]);
   const [hoursPerWeek, setHoursPerWeek] = useState(3);
+  const [snapshot, setSnapshot] = useState<SnapshotRatings>({});
 
   if (profile !== null) {
     return (
       <div className="border-2 border-ink bg-card px-5 py-6">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-verified">
-          Ledger open
+        <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+          You&apos;re set up
         </p>
-        <p className="mt-3 font-display text-xl text-ink">
+        <p className="mt-3 font-display text-xl font-semibold text-ink">
           Welcome back, {profile.displayName}
         </p>
         <p className="mt-2 text-sm text-ink-muted">
           {profile.moduleIds.length} module
-          {profile.moduleIds.length === 1 ? "" : "s"} ·{" "}
-          {ledger.length} stamp{ledger.length === 1 ? "" : "s"} collected
+          {profile.moduleIds.length === 1 ? "" : "s"} · {log.length} build
+          {log.length === 1 ? "" : "s"} done
         </p>
         <Link
           href="/dashboard"
-          className="mt-5 inline-block rounded-sm bg-biro px-5 py-2.5 text-sm font-medium text-white hover:bg-biro-deep"
+          className="mt-5 inline-block rounded-sm bg-cobalt px-5 py-2.5 text-sm font-medium text-white hover:bg-cobalt-deep"
         >
           This week&apos;s builds
         </Link>
@@ -59,6 +63,7 @@ export function InlineOnboarding() {
     .filter((m) => m !== undefined)
     .map((m) => m.code);
   const matchedBuilds = getBuildsForModuleCodes(chosenCodes).length;
+  const hasRatings = Object.keys(snapshot).length > 0;
 
   function toggleModule(id: string) {
     setModuleIds((prev) =>
@@ -66,13 +71,14 @@ export function InlineOnboarding() {
     );
   }
 
-  function finish() {
+  function finish(withSnapshot: boolean) {
     if (universityId === null || moduleIds.length === 0) return;
-    saveProfile({
+    saveProfileAndSync({
       displayName: "Student",
       universityId,
       moduleIds,
       hoursPerWeek,
+      snapshot: withSnapshot && hasRatings ? snapshot : undefined,
       createdAt: new Date().toISOString(),
     });
     router.push("/dashboard");
@@ -80,14 +86,14 @@ export function InlineOnboarding() {
 
   return (
     <div className="border-2 border-ink bg-card px-5 py-6">
-      <p className="font-mono text-[11px] uppercase tracking-widest text-biro">
-        Open your ledger · 30 seconds
+      <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+        Start free · 30 seconds
       </p>
 
       {/* 01 — University */}
       <fieldset className="mt-5">
         <legend className="text-sm font-semibold text-ink">
-          <span className="mr-2 font-mono text-xs text-biro">01</span>
+          <span className="mr-2 font-mono text-xs text-cobalt">01</span>
           Where do you study?
         </legend>
         <div className="mt-2.5 flex flex-wrap gap-2">
@@ -101,7 +107,7 @@ export function InlineOnboarding() {
               }}
               className={`rounded-sm border px-3 py-2 text-sm ${
                 universityId === uni.id
-                  ? "border-biro bg-biro-faint font-medium text-biro-deep"
+                  ? "border-cobalt bg-cobalt-faint font-medium text-cobalt-deep"
                   : "border-rule bg-paper text-ink hover:border-ink-muted"
               }`}
             >
@@ -118,9 +124,9 @@ export function InlineOnboarding() {
 
       {/* 02 — Modules, revealed once a university is picked */}
       {universityId !== null ? (
-        <fieldset className="stamp-in mt-6">
+        <fieldset className="rise-in mt-6">
           <legend className="text-sm font-semibold text-ink">
-            <span className="mr-2 font-mono text-xs text-biro">02</span>
+            <span className="mr-2 font-mono text-xs text-cobalt">02</span>
             Tick your modules
           </legend>
           <div className="mt-2.5 flex flex-wrap gap-2">
@@ -134,7 +140,7 @@ export function InlineOnboarding() {
                   onClick={() => toggleModule(mod.id)}
                   className={`rounded-sm border px-2.5 py-1.5 font-mono text-xs ${
                     selected
-                      ? "border-biro bg-biro text-white"
+                      ? "border-cobalt bg-cobalt text-white"
                       : "border-rule bg-paper text-ink hover:border-ink-muted"
                   }`}
                   title={mod.title}
@@ -150,11 +156,11 @@ export function InlineOnboarding() {
         </fieldset>
       ) : null}
 
-      {/* 03 — Hours + go, revealed once a module is ticked */}
+      {/* 03 — Hours, revealed once a module is ticked */}
       {moduleIds.length > 0 ? (
-        <div className="stamp-in mt-6">
+        <div className="rise-in mt-6">
           <p className="text-sm font-semibold text-ink">
-            <span className="mr-2 font-mono text-xs text-biro">03</span>
+            <span className="mr-2 font-mono text-xs text-cobalt">03</span>
             Hours you can honestly give a week
           </p>
           <div className="mt-2.5 flex gap-2">
@@ -165,7 +171,7 @@ export function InlineOnboarding() {
                 onClick={() => setHoursPerWeek(h)}
                 className={`rounded-sm border px-3.5 py-1.5 font-mono text-sm ${
                   hoursPerWeek === h
-                    ? "border-biro bg-biro text-white"
+                    ? "border-cobalt bg-cobalt text-white"
                     : "border-rule bg-paper text-ink hover:border-ink-muted"
                 }`}
               >
@@ -173,15 +179,41 @@ export function InlineOnboarding() {
               </button>
             ))}
           </div>
+        </div>
+      ) : null}
+
+      {/* 04 — Optional snapshot + start, revealed with 03 */}
+      {moduleIds.length > 0 ? (
+        <div className="rise-in mt-6">
+          <p className="text-sm font-semibold text-ink">
+            <span className="mr-2 font-mono text-xs text-cobalt">04</span>
+            Optional: how confident are you today?
+          </p>
+          <p className="mt-1 text-xs text-ink-muted">
+            Rate yourself and this week&apos;s builds will target your weakest
+            area first. Skip if you like.
+          </p>
+          <div className="mt-3">
+            <SnapshotRater value={snapshot} onChange={setSnapshot} />
+          </div>
           <button
             type="button"
-            onClick={finish}
-            className="mt-5 w-full rounded-sm bg-verified px-5 py-3 text-sm font-medium text-white hover:opacity-90"
+            onClick={() => finish(true)}
+            className="mt-5 w-full rounded-sm bg-cobalt px-5 py-3 text-sm font-medium text-white hover:bg-cobalt-deep"
           >
             {matchedBuilds > 0
               ? `Start — ${matchedBuilds} build${matchedBuilds === 1 ? "" : "s"} matched to your modules`
               : "Start building"}
           </button>
+          {hasRatings ? null : (
+            <button
+              type="button"
+              onClick={() => finish(false)}
+              className="mt-2 w-full py-1 text-center text-xs text-ink-muted hover:text-ink"
+            >
+              Skip the snapshot — you can rate yourself any time
+            </button>
+          )}
         </div>
       ) : null}
     </div>

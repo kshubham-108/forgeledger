@@ -21,7 +21,24 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const build = getBuildBySlug(slug);
-  return { title: build ? `${build.title} — Stamped` : "Stamped" };
+  if (!build) return { title: "Build not found" };
+  const description = `A ${build.estMinutes}-minute practice build for ${disciplineLabels[build.discipline]} students: ${build.summary}`;
+  return {
+    title: build.title,
+    description,
+    alternates: { canonical: `/builds/${build.slug}` },
+    openGraph: {
+      title: build.title,
+      description,
+      url: `/builds/${build.slug}`,
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      title: build.title,
+      description,
+    },
+  };
 }
 
 export default async function BuildPage({ params }: PageProps) {
@@ -31,11 +48,10 @@ export default async function BuildPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-12">
-      <p className="font-mono text-xs uppercase tracking-widest text-biro">
-        Micro-build · {disciplineLabels[build.discipline]} · {build.estMinutes}{" "}
-        min
+      <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
+        25-min build · {disciplineLabels[build.discipline]}
       </p>
-      <h1 className="mt-3 font-display text-3xl leading-tight text-ink">
+      <h1 className="mt-3 font-display text-3xl font-semibold leading-tight text-ink">
         {build.title}
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-ink-muted">
@@ -52,7 +68,7 @@ export default async function BuildPage({ params }: PageProps) {
             >
               {competencyLabels[c]}{" "}
               <span
-                className="font-mono text-biro"
+                className="font-mono text-cobalt"
                 title={`Training weight ${weight} of 3`}
               >
                 {"●".repeat(weight)}
@@ -63,7 +79,7 @@ export default async function BuildPage({ params }: PageProps) {
         })}
       </div>
 
-      {/* What you leave with, and why watching a video wouldn't get you there */}
+      {/* What you leave with, and why doing beats watching */}
       <section className="mt-8 grid gap-4 sm:grid-cols-2">
         <div className="border border-rule bg-card px-4 py-4">
           <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
@@ -75,41 +91,45 @@ export default async function BuildPage({ params }: PageProps) {
         </div>
         <div className="border border-rule bg-card px-4 py-4">
           <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
-            Why not just YouTube?
+            Why do it, not watch it
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-ink">
-            {build.whyNotYoutube}
+            {build.whyDoing}
           </p>
         </div>
       </section>
 
-      {/* Integrity gate — structural, before the steps, not a footnote */}
-      <section className="mt-8 border-l-2 border-verified bg-verified-faint px-4 py-4">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-verified">
-          Integrity gate
+      {/* Ground rules — safe use stated up front, before the steps */}
+      <section className="mt-8 border-l-2 border-cobalt bg-cobalt-faint px-4 py-4">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
+          Ground rules
         </p>
         <dl className="mt-3 flex flex-col gap-3 text-sm leading-relaxed">
           <div>
             <dt className="font-medium text-ink">This build trains</dt>
-            <dd className="mt-0.5 text-ink-muted">{build.integrity.trains}</dd>
+            <dd className="mt-0.5 text-ink-muted">
+              {build.groundRules.trains}
+            </dd>
           </div>
           <div>
-            <dt className="font-medium text-ink">It must not be used for</dt>
-            <dd className="mt-0.5 text-ink-muted">{build.integrity.notFor}</dd>
+            <dt className="font-medium text-ink">Never use it for</dt>
+            <dd className="mt-0.5 text-ink-muted">
+              {build.groundRules.notFor}
+            </dd>
           </div>
           <div>
             <dt className="font-medium text-ink">
-              Verification built into the exercise
+              The checking habit built in
             </dt>
             <dd className="mt-0.5 text-ink-muted">
-              {build.integrity.verificationStep}
+              {build.groundRules.builtInCheck}
             </dd>
           </div>
         </dl>
-        <p className="mt-3 border-t border-verified/30 pt-3 text-xs text-ink-muted">
-          This is AI literacy your university should teach but doesn&apos;t.
-          Stamped never completes assessed work — you confirm this before
-          the entry is stamped.
+        <p className="mt-3 border-t border-cobalt/20 pt-3 text-xs text-ink-muted">
+          These rules are about using AI safely and honestly in your degree.
+          Fluent never completes assessed work — you confirm this when you log
+          the build.
         </p>
       </section>
 
@@ -136,7 +156,7 @@ export default async function BuildPage({ params }: PageProps) {
               key={step}
               className="flex gap-4 border-b border-rule bg-card px-4 py-4 sm:px-6"
             >
-              <span className="shrink-0 font-mono text-xs text-biro">
+              <span className="shrink-0 font-mono text-xs text-cobalt">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <p className="text-sm leading-relaxed text-ink">{step}</p>
@@ -148,7 +168,7 @@ export default async function BuildPage({ params }: PageProps) {
       <CompleteBuildForm
         buildSlug={build.slug}
         moduleCodes={build.moduleCodes}
-        artifactPrompt={build.artifactPrompt}
+        notePrompt={build.notePrompt}
         estMinutes={build.estMinutes}
         competencies={build.competencies}
       />

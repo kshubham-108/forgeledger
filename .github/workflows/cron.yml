@@ -1,0 +1,52 @@
+# Scheduled pipeline for Fluent.
+#
+# Requires two repository secrets (Settings → Secrets and variables → Actions):
+#   APP_URL      — deployed base URL, no trailing slash (e.g. https://fluent.example.com)
+#   CRON_SECRET  — same value as the CRON_SECRET env var on the app host
+#
+# Schedules (UTC):
+#   06:00 daily   — ingest arXiv, then match advances to module topics
+#   07:00 Monday  — build weekly digests per user
+#
+# workflow_dispatch lets you trigger any job manually from the Actions tab.
+
+name: cron
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # daily: ingest + match
+    - cron: "0 7 * * 1" # Mondays: weekly digest
+  workflow_dispatch:
+
+jobs:
+  ingest-and-match:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 6 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ingest arXiv advances
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 30 \
+            -X POST "${{ secrets.APP_URL }}/api/cron/ingest-arxiv" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+
+      - name: Match advances to module topics
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 30 \
+            -X POST "${{ secrets.APP_URL }}/api/cron/match-advances" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+
+  weekly-digest:
+    # needs + !cancelled(): on manual runs the digest waits for fresh matches;
+    # on the Monday schedule it still runs even though ingest-and-match is
+    # skipped (a plain `needs` would skip this job too).
+    needs: [ingest-and-match]
+    if: >-
+      !cancelled() &&
+      (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 * * 1')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build weekly digests
+        run: |
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 30 \
+            -X POST "${{ secrets.APP_URL }}/api/cron/weekly-digest" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"

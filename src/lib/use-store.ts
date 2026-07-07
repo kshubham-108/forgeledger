@@ -1,15 +1,15 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { getLedger, getProfile, subscribe } from "./store";
-import type { LedgerEntry, Profile } from "./types";
+import { getLog, getProfile, subscribe } from "./store";
+import type { LogEntry, Profile } from "./types";
 
-const EMPTY_LEDGER: LedgerEntry[] = [];
+const EMPTY_LOG: LogEntry[] = [];
 
 export function useProfile(): Profile | null {
   return useSyncExternalStore(subscribe, getProfile, () => null);
 }
 
-export function useLedger(): LedgerEntry[] {
-  return useSyncExternalStore(subscribe, getLedger, () => EMPTY_LEDGER);
+export function useLog(): LogEntry[] {
+  return useSyncExternalStore(subscribe, getLog, () => EMPTY_LOG);
 }

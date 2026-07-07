@@ -40,65 +40,66 @@ export type MicroBuild = {
   competencyScores: Partial<Record<Competency, number>>;
   freeTools: string[];
   summary: string;
-  /* The concrete thing you walk away with. */
+  /* The concrete skill you walk away with. */
   deliverable: string;
-  /* The "one killer build" test: why a YouTube video can't substitute. */
-  whyNotYoutube: string;
+  /* Why 25 minutes of doing beats an hour of watching. */
+  whyDoing: string;
   steps: string[];
-  integrity: {
+  /* Ground rules: safe, honest use — not proof, not policing. */
+  groundRules: {
     /* What this build trains. */
     trains: string;
-    /* What it must NOT be used for. */
+    /* What it must never be used for. */
     notFor: string;
-    /* The citation/verification step baked into the exercise itself. */
-    verificationStep: string;
+    /* The checking habit baked into the exercise itself. */
+    builtInCheck: string;
   };
-  artifactPrompt: string;
+  /* Suggestion for the optional personal note when logging the build. */
+  notePrompt: string;
 };
 
-export type RadarItem = {
+/*
+  A recent AI advance from the feeds Fluent watches — arXiv preprints,
+  vendor product updates, and model/tool releases — mapped to the modules
+  it matters for and, where one exists, the build that turns it into a skill.
+*/
+export type Advance = {
   id: string;
   title: string;
-  /* e.g. "arXiv preprint", "regulator guidance", "vendor release" */
-  sourceType: string;
-  source: string;
+  source: "arXiv" | "vendor" | "release";
   date: string;
-  discipline: Discipline;
-  moduleCodes: string[];
-  summary: string;
   whyItMatters: string;
-  buildSlug: string;
+  moduleCodes: string[];
+  relatedBuildSlug?: string;
 };
+
+/* 1–5 self-ratings across competencies — personal progress, nothing more. */
+export type SnapshotRatings = Partial<Record<Competency, number>>;
 
 export type Profile = {
   displayName: string;
   universityId: string;
   moduleIds: string[];
   hoursPerWeek: number;
+  /* Optional capability snapshot taken at onboarding (or later). */
+  snapshot?: SnapshotRatings;
   createdAt: string;
 };
 
-/*
-  Honest evidence provenance for a ledger entry. MVP 0 can only produce the
-  first two; external verification ships later and is never claimed early.
-*/
-export type EvidenceStatus =
-  | "self-assessed"
-  | "artifact-attached"
-  | "externally-verified";
-
-export type LedgerEntry = {
+/* One completed build in the student's personal build log. */
+export type LogEntry = {
   id: string;
   serial: string;
   buildSlug: string;
   moduleCode: string;
-  selfScore: number;
-  /* 1–5 self-rating against each competency the build names. */
-  competencySelfRatings?: Partial<Record<Competency, number>>;
+  /* Overall "how confident do you feel now?" — 1–5, for the student's own eyes. */
+  confidence: number;
+  /* Per-competency confidence after the build. */
+  competencyRatings?: Partial<Record<Competency, number>>;
   timeSpentMin: number;
-  artifactText: string;
-  artifactLink?: string;
-  evidenceStatus?: EvidenceStatus;
-  integrityConfirmed?: boolean;
+  /* Optional note about what you made, kept for your own reference. */
+  note: string;
+  noteLink?: string;
+  groundRulesConfirmed?: boolean;
   completedAt: string;
 };

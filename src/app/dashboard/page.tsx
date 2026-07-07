@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { WeeklyPlan } from "@/components/weekly-plan";
 
 export const metadata: Metadata = {
-  title: "This week — Stamped",
+  title: "This week",
+  description:
+    "Your weekly AI practice plan: builds matched to your modules, your capability snapshot, and the latest advances in your field.",
+  robots: { index: false },
 };
 
 export default function DashboardPage() {

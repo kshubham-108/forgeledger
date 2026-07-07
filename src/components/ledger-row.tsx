@@ -1,47 +1,40 @@
-import { competencyLabels, evidenceStatusLabels } from "@/lib/seed";
-import type { Competency, EvidenceStatus } from "@/lib/types";
+import { competencyLabels } from "@/lib/seed";
+import type { Competency } from "@/lib/types";
 
-type LedgerRowProps = {
+type LogRowProps = {
   serial: string;
   title: string;
   moduleCode: string;
   competencies: Competency[];
   date: string;
   minutes?: number;
-  evidenceStatus?: EvidenceStatus;
+  confidence?: number;
   animate?: boolean;
 };
 
 /*
-  The signature element: a stamped ledger row.
-  The stamp states provenance honestly — what the entry actually is
-  (self-assessed / artifact attached), never a verification we can't back.
+  One completed build in the log: serial, what you practised, and how
+  confident you felt afterwards. A personal record, not a certificate.
 */
-const statusStyles: Record<EvidenceStatus, string> = {
-  "self-assessed": "border-rule bg-paper text-ink-muted",
-  "artifact-attached": "border-verified bg-verified-faint text-verified",
-  "externally-verified": "border-biro bg-biro-faint text-biro-deep",
-};
-
-export function LedgerRow({
+export function LogRow({
   serial,
   title,
   moduleCode,
   competencies,
   date,
   minutes,
-  evidenceStatus = "artifact-attached",
+  confidence,
   animate = false,
-}: LedgerRowProps) {
+}: LogRowProps) {
   return (
     <li
-      className={`flex flex-col gap-2 border-b border-rule bg-card px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6 ${animate ? "stamp-in" : ""}`}
+      className={`flex flex-col gap-2 border-b border-rule bg-card px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6 ${animate ? "rise-in" : ""}`}
     >
-      <span className="font-mono text-xs text-biro">{serial}</span>
+      <span className="font-mono text-xs text-cobalt">{serial}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-ink">{title}</p>
         <div className="mt-1 flex flex-wrap items-center gap-2">
-          <span className="rounded-sm bg-biro-faint px-1.5 py-0.5 font-mono text-[11px] text-biro-deep">
+          <span className="rounded-sm bg-cobalt-faint px-1.5 py-0.5 font-mono text-[11px] text-cobalt-deep">
             {moduleCode}
           </span>
           {competencies.map((c) => (
@@ -52,11 +45,16 @@ export function LedgerRow({
         </div>
       </div>
       <div className="flex items-center gap-3 sm:flex-col sm:items-end sm:gap-1">
-        <span
-          className={`inline-flex items-center gap-1 rounded-sm border px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-wide ${statusStyles[evidenceStatus]}`}
-        >
-          {evidenceStatusLabels[evidenceStatus]}
-        </span>
+        {confidence !== undefined ? (
+          <span
+            className="font-mono text-[11px] tracking-wider text-cobalt"
+            title={`Confidence after the build: ${confidence} of 5`}
+            aria-label={`Confidence after the build: ${confidence} of 5`}
+          >
+            {"●".repeat(confidence)}
+            {"○".repeat(Math.max(0, 5 - confidence))}
+          </span>
+        ) : null}
         <span className="font-mono text-[11px] text-ink-muted">
           {date}
           {minutes !== undefined ? ` · ${minutes} min` : null}

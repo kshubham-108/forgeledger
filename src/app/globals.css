@@ -1,30 +1,26 @@
 @import "tailwindcss";
 
 /*
-  Stamped design tokens — "student stationery meets institutional registry"
-  paper:    cool ledger white (not cream)
-  ink:      near-black writing ink
-  biro:     ballpoint blue — primary accent
-  marker:   highlighter yellow — used sparingly, as a text swipe
-  verified: completion stamp green
-  rule:     ledger ruling lines
+  Fluent design tokens — clean paper, near-black ink, one electric accent.
+  paper:  off-white ground
+  ink:    near-black text
+  cobalt: electric cobalt/indigo — the single accent
+  rule:   ruled-line dividers
+  card:   raised surfaces
 */
 @theme {
   --color-paper: #f7f8f5;
   --color-ink: #14181f;
-  --color-ink-muted: #5a6068;
-  --color-biro: #2442c8;
-  --color-biro-deep: #1b3199;
-  --color-biro-faint: #e6eafc;
-  --color-marker: #f5e960;
-  --color-verified: #216c51;
-  --color-verified-faint: #e3efe9;
+  --color-ink-muted: #3d434e;
+  --color-cobalt: #3230e6;
+  --color-cobalt-deep: #2321b4;
+  --color-cobalt-faint: #eaeafc;
   --color-rule: #d8dcd3;
   --color-card: #fdfefb;
 
-  --font-display: var(--font-young-serif);
-  --font-sans: var(--font-public-sans);
-  --font-mono: var(--font-spline-mono);
+  --font-display: var(--font-bricolage);
+  --font-sans: var(--font-instrument-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
@@ -34,18 +30,23 @@ body {
 }
 
 ::selection {
-  background: var(--color-marker);
-  color: var(--color-ink);
+  background: var(--color-cobalt);
+  color: #ffffff;
 }
 
-/* Visible keyboard focus, biro-blue */
+/* Visible keyboard focus, cobalt */
 :focus-visible {
-  outline: 2px solid var(--color-biro);
+  outline: 2px solid var(--color-cobalt);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
-/* Notebook margin rule: thin vertical biro line down the left of ledger blocks */
+/* Cobalt is invisible against the dark header — use paper there instead */
+header :focus-visible {
+  outline-color: var(--color-paper);
+}
+
+/* Notebook margin rule: thin vertical accent line down the left of log blocks */
 .margin-ruled {
   position: relative;
 }
@@ -56,52 +57,122 @@ body {
   bottom: 0;
   left: 2.25rem;
   width: 1px;
-  background: color-mix(in srgb, var(--color-biro) 30%, transparent);
+  background: color-mix(in srgb, var(--color-cobalt) 28%, transparent);
   pointer-events: none;
 }
 
-/* Stamp settle animation for ledger entries */
-@keyframes stamp-settle {
-  0% {
+/* Progressive reveal: content rises in as it appears */
+@keyframes rise-in {
+  from {
     opacity: 0;
-    transform: scale(1.05);
+    transform: translateY(6px);
   }
-  60% {
+  to {
     opacity: 1;
-    transform: scale(0.99);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
-.stamp-in {
-  animation: stamp-settle 0.35s ease-out both;
+.rise-in {
+  animation: rise-in 0.4s ease-out both;
 }
-.stamp-in:nth-child(2) {
+.rise-in:nth-child(2) {
   animation-delay: 0.08s;
 }
-.stamp-in:nth-child(3) {
+.rise-in:nth-child(3) {
   animation-delay: 0.16s;
 }
 
+/* Staggered reveal for small groups (the loop cards, hero blocks) */
+.stagger > * {
+  animation: rise-in 0.5s ease-out both;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.36s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.48s;
+}
+
+/* Rotating hero line: one line swaps in at a time */
+@keyframes word-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.word-in {
+  animation: word-in 0.45s ease-out both;
+}
+
 /*
-  Landing backdrop — quiet motion behind the hero.
-  Ruled paper lines drift downward, two ink washes breathe, and a large
-  stamp ring rotates once every couple of minutes. Everything sits far
-  below text contrast thresholds.
+  Frontier ticker: a slow, seamless marquee. The track holds two identical
+  lists; translating -50% loops exactly one list-width. Pauses on hover.
+*/
+.ticker {
+  overflow: hidden;
+}
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 80s linear infinite;
+}
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Animated connector between "the loop" cards: a flowing dashed line */
+.loop-connector {
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-cobalt) 55%, transparent) 0,
+    color-mix(in srgb, var(--color-cobalt) 55%, transparent) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  background-size: 12px 100%;
+  animation: loop-flow 1.2s linear infinite;
+}
+@keyframes loop-flow {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 12px;
+  }
+}
+
+/*
+  Landing backdrop — quiet. Ruled lines drift very slowly; one soft cobalt
+  wash breathes behind the hero. Everything sits far below text contrast.
 */
 .backdrop-rules {
   background-image: repeating-linear-gradient(
     to bottom,
     transparent 0,
     transparent 31px,
-    color-mix(in srgb, var(--color-rule) 55%, transparent) 31px,
-    color-mix(in srgb, var(--color-rule) 55%, transparent) 32px
+    color-mix(in srgb, var(--color-rule) 50%, transparent) 31px,
+    color-mix(in srgb, var(--color-rule) 50%, transparent) 32px
   );
-  animation: rules-drift 24s linear infinite;
+  animation: rules-drift 48s linear infinite;
 }
-
 @keyframes rules-drift {
   from {
     background-position-y: 0;
@@ -111,66 +182,158 @@ body {
   }
 }
 
-.backdrop-margin {
-  left: clamp(1.5rem, 6vw, 5rem);
-  width: 1px;
-  background: color-mix(in srgb, var(--color-biro) 22%, transparent);
-}
-
 .backdrop-wash {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(70px);
-  animation: wash-drift 18s ease-in-out infinite alternate;
-}
-.backdrop-wash-a {
-  top: -10%;
-  right: -5%;
+  top: -12%;
+  right: -6%;
   width: 34rem;
   height: 34rem;
-  background: color-mix(in srgb, var(--color-biro) 7%, transparent);
+  border-radius: 50%;
+  filter: blur(80px);
+  background: color-mix(in srgb, var(--color-cobalt) 6%, transparent);
+  animation: wash-drift 20s ease-in-out infinite alternate;
 }
-.backdrop-wash-b {
-  bottom: -20%;
-  left: 10%;
-  width: 28rem;
-  height: 28rem;
-  background: color-mix(in srgb, var(--color-marker) 12%, transparent);
-  animation-delay: -9s;
-}
-
 @keyframes wash-drift {
   from {
     transform: translate3d(0, 0, 0) scale(1);
   }
   to {
-    transform: translate3d(-3rem, 2rem, 0) scale(1.08);
+    transform: translate3d(-2.5rem, 1.5rem, 0) scale(1.06);
   }
 }
 
-.backdrop-stamp-ring {
+/* Second, lower cobalt wash on a longer offset so the two never sync */
+.backdrop-wash-b {
   position: absolute;
-  top: 50%;
-  right: clamp(-8rem, -4vw, -2rem);
-  width: 26rem;
-  height: 26rem;
-  margin-top: -13rem;
+  bottom: 4%;
+  left: -10%;
+  width: 30rem;
+  height: 30rem;
   border-radius: 50%;
-  border: 1.5px dashed color-mix(in srgb, var(--color-biro) 14%, transparent);
-  animation: ring-turn 140s linear infinite;
+  filter: blur(90px);
+  background: color-mix(in srgb, var(--color-cobalt) 5%, transparent);
+  animation: wash-drift-b 34s ease-in-out infinite alternate;
+}
+@keyframes wash-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3rem, -2rem, 0) scale(1.08);
+  }
 }
 
-@keyframes ring-turn {
+/* Signal sweep: one hairline crosses the page slowly, fading at both ends */
+.backdrop-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--color-cobalt) 22%, transparent) 30%,
+    color-mix(in srgb, var(--color-cobalt) 22%, transparent) 70%,
+    transparent
+  );
+  animation: sweep-across 13s linear infinite;
+}
+@keyframes sweep-across {
+  from {
+    transform: translateX(-2vw);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+}
+
+/*
+  Backdrop glyphs: technical-drawing marginalia (dotted circle, dashed
+  ring, crosshair, asterisk...) floating on long, staggered loops.
+  Position, size, duration and delay are set per instance inline.
+*/
+.glyph {
+  position: absolute;
+}
+.glyph-float {
+  animation: glyph-float 20s ease-in-out infinite;
+}
+@keyframes glyph-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -16px, 0);
+  }
+}
+.glyph-drift {
+  animation: glyph-drift 24s ease-in-out infinite;
+}
+@keyframes glyph-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(12px, -18px, 0) rotate(12deg);
+  }
+}
+.glyph-spin {
+  animation: glyph-spin 40s linear infinite;
+}
+@keyframes glyph-spin {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
+.glyph-spin-reverse {
+  animation: glyph-spin-reverse 48s linear infinite;
+}
+@keyframes glyph-spin-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .stamp-in,
+  .rise-in,
+  .stagger > *,
+  .word-in,
+  .loop-connector,
   .backdrop-rules,
   .backdrop-wash,
-  .backdrop-stamp-ring {
+  .backdrop-wash-b,
+  .glyph-float,
+  .glyph-drift,
+  .glyph-spin,
+  .glyph-spin-reverse {
+    animation: none;
+  }
+  /* The sweep line only exists as motion — hide it entirely when frozen */
+  .backdrop-sweep {
+    animation: none;
+    opacity: 0;
+  }
+  .ticker {
+    overflow-x: auto;
+  }
+  .ticker-track {
     animation: none;
   }
 }
