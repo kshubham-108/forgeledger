@@ -9,6 +9,7 @@ type LogRowProps = {
   date: string;
   minutes?: number;
   confidence?: number;
+  animate?: boolean;
 };
 
 /*
@@ -23,10 +24,11 @@ export function LogRow({
   date,
   minutes,
   confidence,
+  animate = false,
 }: LogRowProps) {
   return (
     <li
-      className="flex flex-col gap-2 border-b border-rule bg-card px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6"
+      className={`flex flex-col gap-2 border-b border-rule bg-card px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6 ${animate ? "rise-in" : ""}`}
     >
       <span className="font-mono text-xs text-cobalt">{serial}</span>
       <div className="min-w-0 flex-1">

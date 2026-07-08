@@ -9,11 +9,16 @@ const FrontierTicker = dynamic(
     import("@/components/frontier-ticker").then((mod) => mod.FrontierTicker),
   {
     loading: () => (
-      <div className="border-y border-cobalt-soft bg-card py-10" aria-hidden="true" />
+      <div className="border-y border-rule bg-card py-3" aria-hidden="true">
+        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-rule" />
+      </div>
     ),
   },
 );
 
+/* Honest FAQs — mirrors what UK student sites (Save the Student, UCAS)
+   do well: question-format headings answering real objections. Rendered
+   on-page and emitted as FAQPage JSON-LD. */
 const FAQS = [
   {
     q: "Is Fluent another online AI course?",
@@ -53,26 +58,140 @@ const ROTATING_SUBJECTS = [
   "Medicine",
 ];
 
-const LOOP_CARDS = [
-  {
-    num: "01 · A new advance lands",
-    body: "Deep-research agents can now run 30-minute multi-source investigations unattended.",
-    meta: "Vendor update · 27 Jun 2026",
-    link: null,
-  },
-  {
-    num: "02 · Matched to your module",
-    body: "Sources and Methods in Modern History — a module you're taking this term.",
-    meta: "HIST2260 · University of Manchester",
-    link: null,
-  },
-  {
-    num: "03 · You practise it this week",
-    body: "Map a historiographical debate with a research agent — 25 minutes, free tools.",
-    meta: null,
-    link: { href: "/builds/history-deep-research-map", label: "Open this build →" },
-  },
-];
+/*
+  Quiet animated backdrop: ruled paper drifting very slowly, two soft
+  cobalt washes floating on long offsets, a signal sweep line passing
+  through every few seconds, and a scatter of technical-drawing glyphs
+  (dotted circle, dashed ring, crosshairs, asterisk, diamond, orbit dot)
+  floating on staggered loops. Decorative, behind the content, frozen for
+  prefers-reduced-motion.
+*/
+function Backdrop() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <div className="backdrop-rules absolute inset-0" />
+      <div className="backdrop-wash" />
+      <div className="backdrop-wash-b" />
+      <div className="backdrop-sweep" />
+
+      {/* Dotted circle — upper middle, slow clockwise spin */}
+      <svg
+        className="glyph glyph-spin"
+        style={{ top: "7%", left: "51%", width: 64, height: 64, animationDuration: "42s" }}
+        viewBox="0 0 64 64"
+      >
+        <circle
+          cx="32"
+          cy="32"
+          r="27"
+          fill="none"
+          stroke="var(--color-cobalt)"
+          strokeWidth="1.5"
+          strokeDasharray="0.1 8.5"
+          strokeLinecap="round"
+          opacity="0.16"
+        />
+      </svg>
+
+      {/* Crosshair — left margin of the hero, gentle float */}
+      <svg
+        className="glyph glyph-float"
+        style={{ top: "30%", left: "3%", width: 26, height: 26, animationDuration: "17s" }}
+        viewBox="0 0 26 26"
+      >
+        <g stroke="var(--color-ink)" strokeWidth="1.2" opacity="0.14">
+          <line x1="13" y1="0" x2="13" y2="26" />
+          <line x1="0" y1="13" x2="26" y2="13" />
+          <circle cx="13" cy="13" r="5" fill="none" />
+        </g>
+      </svg>
+
+      {/* Orbit dot — right edge, dot circles a faint track */}
+      <svg
+        className="glyph glyph-spin"
+        style={{ top: "22%", right: "2%", width: 72, height: 72, animationDuration: "24s" }}
+        viewBox="0 0 72 72"
+      >
+        <circle
+          cx="36"
+          cy="36"
+          r="30"
+          fill="none"
+          stroke="var(--color-ink)"
+          strokeWidth="1"
+          opacity="0.1"
+        />
+        <circle cx="36" cy="6" r="3" fill="var(--color-cobalt)" opacity="0.3" />
+      </svg>
+
+      {/* Asterisk — drifts near the ticker, slight rotation */}
+      <svg
+        className="glyph glyph-drift"
+        style={{ top: "44%", left: "8%", width: 32, height: 32, animationDuration: "26s" }}
+        viewBox="0 0 32 32"
+      >
+        <g
+          stroke="var(--color-cobalt)"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          opacity="0.18"
+        >
+          <line x1="16" y1="3" x2="16" y2="29" />
+          <line x1="4.7" y1="9.5" x2="27.3" y2="22.5" />
+          <line x1="4.7" y1="22.5" x2="27.3" y2="9.5" />
+        </g>
+      </svg>
+
+      {/* Diamond (square at 45°) — right margin, mid-page */}
+      <svg
+        className="glyph glyph-float"
+        style={{ top: "52%", right: "5%", width: 40, height: 40, animationDuration: "21s", animationDelay: "-7s" }}
+        viewBox="0 0 40 40"
+      >
+        <path
+          d="M20 3 L37 20 L20 37 L3 20 Z"
+          fill="none"
+          stroke="var(--color-ink)"
+          strokeWidth="1.2"
+          opacity="0.12"
+        />
+      </svg>
+
+      {/* Dashed ring — lower left, slow counter-clockwise spin */}
+      <svg
+        className="glyph glyph-spin-reverse"
+        style={{ top: "68%", left: "4%", width: 80, height: 80, animationDuration: "52s" }}
+        viewBox="0 0 80 80"
+      >
+        <circle
+          cx="40"
+          cy="40"
+          r="34"
+          fill="none"
+          stroke="var(--color-cobalt)"
+          strokeWidth="1.4"
+          strokeDasharray="10 8"
+          opacity="0.14"
+        />
+      </svg>
+
+      {/* Small plus — lower middle, gentle drift */}
+      <svg
+        className="glyph glyph-drift"
+        style={{ top: "82%", left: "47%", width: 22, height: 22, animationDuration: "19s", animationDelay: "-4s" }}
+        viewBox="0 0 22 22"
+      >
+        <g stroke="var(--color-cobalt)" strokeWidth="1.6" strokeLinecap="round" opacity="0.16">
+          <line x1="11" y1="2" x2="11" y2="20" />
+          <line x1="2" y1="11" x2="20" y2="11" />
+        </g>
+      </svg>
+    </div>
+  );
+}
 
 function StructuredData() {
   const organization = {
@@ -111,76 +230,49 @@ function StructuredData() {
   );
 }
 
-function HeroBackdrop() {
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-hidden"
-    >
-      <div
-        className="absolute -top-20 right-[30%] h-[30rem] w-[30rem] rounded-full opacity-90"
-        style={{
-          background:
-            "radial-gradient(circle, #7b78ff30 0%, #4a47f000 70%)",
-          filter: "blur(60px)",
-        }}
-      />
-      <div
-        className="absolute bottom-0 -left-10 h-[22.5rem] w-[22.5rem] rounded-full opacity-90"
-        style={{
-          background:
-            "radial-gradient(circle, #4a47f022 0%, #4a47f000 70%)",
-          filter: "blur(50px)",
-        }}
-      />
-    </div>
-  );
-}
-
 export default function LandingPage() {
   return (
-    <div>
+    <div className="relative">
       <StructuredData />
+      <Backdrop />
 
       {/* Hero + inline onboarding */}
-      <section className="relative">
-        <HeroBackdrop />
-        <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-12 pb-12 pt-12 lg:grid-cols-[1fr_340px]">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-cobalt-deep">
-              For UK undergraduates
-            </p>
-            <h1 className="mt-5 max-w-[680px] font-display text-[2.75rem] font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-[3.25rem]">
-              Get fluent in the latest AI inside your{" "}
-              <span className="inline-flex flex-wrap items-end gap-2.5">
-                <RotatingWord words={ROTATING_SUBJECTS} />
-                <span>degree.</span>
-              </span>
-            </h1>
-            <p className="mt-5 max-w-[480px] text-base leading-relaxed text-ink-muted">
-              Every week, new advances from arXiv and the model labs become
-              25-minute practice builds matched to the modules you&rsquo;re
-              actually taking. Not another course — practice, in your subject.
-            </p>
-            <p className="mt-5">
-              <GatedLink
-                href="/builds/psych-literature-pipeline"
-                className="font-mono text-xs text-cobalt-glow hover:text-cobalt-deep"
-              >
-                See an example build &rarr;
-              </GatedLink>
-            </p>
-          </div>
-          <div className="lg:pt-0">
-            <LazyInlineOnboarding />
-          </div>
+      <section className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1fr_22rem]">
+        <div className="stagger">
+          <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
+            For UK undergraduates
+          </p>
+          <h1 className="mt-4 max-w-2xl text-balance font-display text-4xl font-semibold leading-[1.08] text-ink sm:text-6xl lg:text-[4rem]">
+            Get fluent in the latest AI inside your{" "}
+            <RotatingWord words={ROTATING_SUBJECTS} />
+            <span className="block">degree.</span>
+          </h1>
+          <p className="mt-6 max-w-md text-base leading-relaxed text-ink-muted">
+            Every week, new advances from arXiv and the model labs become
+            25-minute practice builds matched to the modules you&rsquo;re
+            actually taking. Not another course — practice, in your subject.
+          </p>
+          <p className="mt-6">
+            <GatedLink
+              href="/builds/psych-literature-pipeline"
+              className="font-mono text-xs text-cobalt hover:text-cobalt-deep"
+            >
+              See an example build &rarr;
+            </GatedLink>
+          </p>
+        </div>
+        <div className="lg:pt-2">
+          <LazyInlineOnboarding />
         </div>
       </section>
 
-      <FrontierTicker />
+      {/* This week from the frontier — seeded ticker */}
+      <div className="relative">
+        <FrontierTicker />
+      </div>
 
-      {/* How Fluent works */}
-      <section className="mx-auto w-full max-w-7xl px-12 py-12">
+      {/* The loop: advance → your module → 25-minute build */}
+      <section className="relative mx-auto w-full max-w-5xl px-6 py-16">
         <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
           How Fluent works
         </h2>
@@ -188,141 +280,160 @@ export default function LandingPage() {
           One loop, on repeat: something new lands at the frontier, Fluent maps
           it to your modules, and you practise it the same week.
         </p>
-        <div className="mt-8 flex flex-col gap-4 lg:flex-row">
-          {LOOP_CARDS.map((card) => (
-            <div
-              key={card.num}
-              className="flex-1 rounded-sm border border-cobalt-soft border-l-[3px] border-l-cobalt-soft bg-card p-5 shadow-[0_2px_12px_-2px_#4a47f018]"
-            >
-              <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
-                {card.num}
-              </p>
-              <p className="mt-3 text-sm leading-snug text-ink">{card.body}</p>
-              {card.meta ? (
-                <p className="mt-2 font-mono text-[11px] text-ink-muted">
-                  {card.meta}
-                </p>
-              ) : null}
-              {card.link ? (
-                <p className="mt-2">
-                  <GatedLink
-                    href={card.link.href}
-                    className="font-mono text-[11px] text-cobalt hover:text-cobalt-deep"
-                  >
-                    {card.link.label}
-                  </GatedLink>
-                </p>
-              ) : null}
-            </div>
-          ))}
+        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-0">
+          <div className="flex-1 border border-rule bg-card px-5 py-5">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+              01 · A new advance lands
+            </p>
+            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+              Deep-research agents can now run 30-minute multi-source
+              investigations unattended.
+            </p>
+            <p className="mt-2 font-mono text-[11px] text-ink-muted">
+              Vendor update · 27 Jun 2026
+            </p>
+          </div>
+          <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
+          <div className="flex-1 border border-rule bg-card px-5 py-5">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+              02 · Matched to your module
+            </p>
+            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+              Sources and Methods in Modern History — a module you&rsquo;re
+              taking this term.
+            </p>
+            <p className="mt-2 font-mono text-[11px] text-ink-muted">
+              HIST2260 · University of Manchester
+            </p>
+          </div>
+          <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
+          <div className="flex-1 border border-rule bg-card px-5 py-5">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+              03 · You practise it this week
+            </p>
+            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+              Map a historiographical debate with a research agent — 25
+              minutes, free tools.
+            </p>
+            <p className="mt-2">
+              <GatedLink
+                href="/builds/history-deep-research-map"
+                className="font-mono text-[11px] text-cobalt hover:text-cobalt-deep"
+              >
+                Open this build &rarr;
+              </GatedLink>
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* HEPI stats */}
-      <section className="border-y border-cobalt-soft bg-gradient-to-b from-cobalt-faint via-cobalt-soft to-mist">
-        <div className="mx-auto grid w-full max-w-7xl gap-12 px-12 py-12 sm:grid-cols-[auto_auto_1fr] sm:items-center">
+      {/* The teaching gap — HEPI 2025 */}
+      <section className="relative border-y border-rule bg-cobalt-faint">
+        <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-12 sm:grid-cols-[auto_auto_1fr] sm:items-center sm:gap-12">
           <div>
             <p className="font-display text-5xl font-semibold text-ink">92%</p>
-            <p className="mt-2 max-w-[11rem] text-xs leading-relaxed text-ink-muted">
+            <p className="mt-1 max-w-[12rem] text-xs leading-relaxed text-ink-muted">
               of UK students already use AI in their studies
             </p>
           </div>
           <div>
-            <p className="font-display text-5xl font-semibold text-cobalt-deep">
+            <p className="font-display text-5xl font-semibold text-cobalt">
               36%
             </p>
-            <p className="mt-2 max-w-[11rem] text-xs leading-relaxed text-ink-muted">
+            <p className="mt-1 max-w-[12rem] text-xs leading-relaxed text-ink-muted">
               have been taught how to use it well
             </p>
           </div>
           <div className="max-w-md">
             <p className="text-sm leading-relaxed text-ink">
-              The gap isn&rsquo;t access — it&rsquo;s teaching. Lectures move at
-              term pace; the frontier moves weekly. Fluent closes the gap with
-              practice inside your modules, not another lecture.
+              The gap isn&rsquo;t access — it&rsquo;s teaching. Lectures move
+              at term pace; the frontier moves weekly. Fluent closes the gap
+              with practice inside your modules, not another lecture.
             </p>
-            <p className="mt-2 font-mono text-[11px] text-cobalt-deep">
+            <p className="mt-2 font-mono text-[11px] text-ink-muted">
               HEPI Student Generative AI Survey 2025
             </p>
           </div>
         </div>
       </section>
 
-      {/* Built to be trusted */}
-      <section className="border-y border-cobalt-soft bg-mist">
-        <div className="mx-auto w-full max-w-7xl px-12 py-12">
+      {/* Why trust Fluent — plain commitments, not badges */}
+      <section className="relative border-y border-rule bg-card">
+        <div className="mx-auto w-full max-w-5xl px-6 py-16">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Built to be trusted
           </h2>
           <div className="mt-8 grid gap-8 sm:grid-cols-3">
-            {[
-              {
-                title: "Free tools only",
-                body: "Every build runs on tools with a free tier. You're never asked to pay to keep up with classmates who can.",
-              },
-              {
-                title: "Never does your work",
-                body: "Each build states what it trains and what it must never be used for. Checking, citing and honest use are built into the steps — not a policy page.",
-              },
-              {
-                title: "Your log stays yours",
-                body: "Notes and progress live on your device in this release. Nothing is shared, sold, or used to train models.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-sm border border-cobalt-soft bg-card p-5"
-              >
-                <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {item.body}
-                </p>
-              </div>
-            ))}
+            <div>
+              <h3 className="text-sm font-semibold text-ink">
+                Free tools only
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                Every build runs on tools with a free tier. You&rsquo;re never
+                asked to pay to keep up with classmates who can.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-ink">
+                Never does your work
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                Each build states what it trains and what it must never be
+                used for. Checking, citing and honest use are built into the
+                steps — not a policy page.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-ink">
+                Your log stays yours
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                Notes and progress live on your device in this release.
+                Nothing is shared, sold, or used to train models.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ — real objections, question-format headings, backed by JSON-LD */}
       <section
-        className="bg-paper-warm"
+        className="relative mx-auto w-full max-w-5xl px-6 py-16"
         aria-labelledby="faq-heading"
       >
-        <div className="mx-auto w-full max-w-7xl px-12 py-12">
-          <h2
-            id="faq-heading"
-            className="font-mono text-xs uppercase tracking-widest text-ink"
-          >
-            Common questions
-          </h2>
-          <dl className="mt-6 grid gap-x-12 gap-y-8 sm:grid-cols-2">
-            {FAQS.map((faq) => (
-              <div key={faq.q}>
-                <dt className="text-sm font-semibold text-ink">{faq.q}</dt>
-                <dd className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {faq.a}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+        <h2
+          id="faq-heading"
+          className="font-mono text-xs uppercase tracking-widest text-ink"
+        >
+          Common questions
+        </h2>
+        <dl className="mt-6 grid gap-x-12 gap-y-8 sm:grid-cols-2">
+          {FAQS.map((faq) => (
+            <div key={faq.q}>
+              <dt className="text-sm font-semibold text-ink">{faq.q}</dt>
+              <dd className="mt-2 text-sm leading-relaxed text-ink-muted">
+                {faq.a}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      {/* Closing CTA */}
-      <section className="border-t border-cobalt-deep bg-gradient-to-br from-header to-[#1a2550]">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-6 px-12 py-12 sm:flex-row sm:items-center sm:justify-between">
+      {/* Closing CTA — one action, restated value */}
+      <section className="relative border-t border-rule">
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-start gap-6 px-6 py-16 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="max-w-lg font-display text-[1.75rem] font-semibold leading-tight text-paper">
+            <h2 className="max-w-md text-balance font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
               This week&rsquo;s advances are already matched to modules.
             </h2>
-            <p className="mt-3 max-w-lg text-sm leading-relaxed text-paper/70">
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
               Pick your university and modules above — your first 25-minute
               build is ready today.
             </p>
           </div>
           <GatedLink
             href="/builds/psych-literature-pipeline"
-            className="shrink-0 rounded-sm bg-gradient-to-b from-cobalt-glow via-cobalt to-cobalt-deep px-6 py-3 text-sm font-medium text-white shadow-[0_4px_16px_#4a47f050] hover:opacity-95"
+            className="shrink-0 rounded-sm bg-cobalt px-6 py-3 text-sm font-medium text-white hover:bg-cobalt-deep"
           >
             Try an example build
           </GatedLink>

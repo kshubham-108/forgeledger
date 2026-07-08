@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 /*
-  Fluent design tokens — aligned with design.pen
+  Fluent design tokens — clean paper, near-black ink, one electric accent.
+  paper:  off-white ground
+  ink:    near-black text
+  cobalt: electric cobalt/indigo — the single accent
+  rule:   ruled-line dividers
+  card:   raised surfaces
 */
 @theme {
-  --color-paper: #eef1ec;
-  --color-paper-warm: #e8ebe4;
-  --color-mist: #f6f7fc;
-  --color-ink: #0d1117;
-  --color-ink-muted: #5a6478;
-  --color-cobalt: #4a47f0;
-  --color-cobalt-deep: #2f2cc4;
-  --color-cobalt-glow: #7b78ff;
-  --color-cobalt-faint: #ecebff;
-  --color-cobalt-soft: #d4d2ff;
-  --color-header: #0a0f1e;
-  --color-rule: #c5cdd8;
-  --color-card: #ffffff;
+  --color-paper: #f7f8f5;
+  --color-ink: #14181f;
+  --color-ink-muted: #3d434e;
+  --color-cobalt: #3230e6;
+  --color-cobalt-deep: #2321b4;
+  --color-cobalt-faint: #eaeafc;
+  --color-rule: #d8dcd3;
+  --color-card: #fdfefb;
 
   --font-display: var(--font-bricolage);
   --font-sans: var(--font-instrument-sans);
@@ -34,17 +34,72 @@ body {
   color: #ffffff;
 }
 
+/* Visible keyboard focus, cobalt */
 :focus-visible {
   outline: 2px solid var(--color-cobalt);
   outline-offset: 2px;
   border-radius: 2px;
 }
 
+/* Cobalt is invisible against the dark header — use paper there instead */
 header :focus-visible {
   outline-color: var(--color-paper);
 }
 
-/* Rotating hero subject word */
+/* Notebook margin rule: thin vertical accent line down the left of log blocks */
+.margin-ruled {
+  position: relative;
+}
+.margin-ruled::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2.25rem;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-cobalt) 28%, transparent);
+  pointer-events: none;
+}
+
+/* Progressive reveal: content rises in as it appears */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: rise-in 0.4s ease-out both;
+}
+.rise-in:nth-child(2) {
+  animation-delay: 0.08s;
+}
+.rise-in:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+/* Staggered reveal for small groups (the loop cards, hero blocks) */
+.stagger > * {
+  animation: rise-in 0.5s ease-out both;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.36s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.48s;
+}
+
+/* Rotating hero line: one line swaps in at a time */
 @keyframes word-in {
   from {
     opacity: 0;
@@ -59,7 +114,10 @@ header :focus-visible {
   animation: word-in 0.45s ease-out both;
 }
 
-/* Frontier ticker marquee */
+/*
+  Frontier ticker: a slow, seamless marquee. The track holds two identical
+  lists; translating -50% loops exactly one list-width. Pauses on hover.
+*/
 .ticker {
   overflow: hidden;
 }
@@ -80,9 +138,197 @@ header :focus-visible {
   }
 }
 
+/* Animated connector between "the loop" cards: a flowing dashed line */
+.loop-connector {
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-cobalt) 55%, transparent) 0,
+    color-mix(in srgb, var(--color-cobalt) 55%, transparent) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  background-size: 12px 100%;
+  animation: loop-flow 1.2s linear infinite;
+}
+@keyframes loop-flow {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 12px;
+  }
+}
+
+/*
+  Landing backdrop — quiet. Ruled lines drift very slowly; one soft cobalt
+  wash breathes behind the hero. Everything sits far below text contrast.
+*/
+.backdrop-rules {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    color-mix(in srgb, var(--color-rule) 50%, transparent) 31px,
+    color-mix(in srgb, var(--color-rule) 50%, transparent) 32px
+  );
+  animation: rules-drift 48s linear infinite;
+}
+@keyframes rules-drift {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 32px;
+  }
+}
+
+.backdrop-wash {
+  position: absolute;
+  top: -12%;
+  right: -6%;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  filter: blur(80px);
+  background: color-mix(in srgb, var(--color-cobalt) 6%, transparent);
+  animation: wash-drift 20s ease-in-out infinite alternate;
+}
+@keyframes wash-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-2.5rem, 1.5rem, 0) scale(1.06);
+  }
+}
+
+/* Second, lower cobalt wash on a longer offset so the two never sync */
+.backdrop-wash-b {
+  position: absolute;
+  bottom: 4%;
+  left: -10%;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 50%;
+  filter: blur(90px);
+  background: color-mix(in srgb, var(--color-cobalt) 5%, transparent);
+  animation: wash-drift-b 34s ease-in-out infinite alternate;
+}
+@keyframes wash-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3rem, -2rem, 0) scale(1.08);
+  }
+}
+
+/* Signal sweep: one hairline crosses the page slowly, fading at both ends */
+.backdrop-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--color-cobalt) 22%, transparent) 30%,
+    color-mix(in srgb, var(--color-cobalt) 22%, transparent) 70%,
+    transparent
+  );
+  animation: sweep-across 13s linear infinite;
+}
+@keyframes sweep-across {
+  from {
+    transform: translateX(-2vw);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+}
+
+/*
+  Backdrop glyphs: technical-drawing marginalia (dotted circle, dashed
+  ring, crosshair, asterisk...) floating on long, staggered loops.
+  Position, size, duration and delay are set per instance inline.
+*/
+.glyph {
+  position: absolute;
+}
+.glyph-float {
+  animation: glyph-float 20s ease-in-out infinite;
+}
+@keyframes glyph-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -16px, 0);
+  }
+}
+.glyph-drift {
+  animation: glyph-drift 24s ease-in-out infinite;
+}
+@keyframes glyph-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(12px, -18px, 0) rotate(12deg);
+  }
+}
+.glyph-spin {
+  animation: glyph-spin 40s linear infinite;
+}
+@keyframes glyph-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.glyph-spin-reverse {
+  animation: glyph-spin-reverse 48s linear infinite;
+}
+@keyframes glyph-spin-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .word-in {
+  .rise-in,
+  .stagger > *,
+  .word-in,
+  .loop-connector,
+  .backdrop-rules,
+  .backdrop-wash,
+  .backdrop-wash-b,
+  .glyph-float,
+  .glyph-drift,
+  .glyph-spin,
+  .glyph-spin-reverse {
     animation: none;
+  }
+  /* The sweep line only exists as motion — hide it entirely when frozen */
+  .backdrop-sweep {
+    animation: none;
+    opacity: 0;
   }
   .ticker {
     overflow-x: auto;

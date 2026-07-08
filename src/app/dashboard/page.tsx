@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <AuthGuard>
-      <div className="mx-auto w-full max-w-7xl px-12 py-12">
+      <div className="mx-auto w-full max-w-5xl px-6 py-12">
         <LazyWeeklyPlan />
       </div>
     </AuthGuard>

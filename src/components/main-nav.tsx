@@ -5,7 +5,7 @@ import { AuthNav } from "@/components/auth-nav";
 
 export function MainNav() {
   return (
-    <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-12 py-4">
+    <nav className="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 py-4">
       <Link
         href="/"
         className="font-display text-xl font-semibold tracking-tight text-paper"

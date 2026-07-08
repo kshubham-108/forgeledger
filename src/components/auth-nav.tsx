@@ -34,7 +34,7 @@ export function AuthNav() {
   }
 
   return (
-    <Link href="/dashboard" className="text-cobalt-glow hover:text-paper">
+    <Link href="/dashboard" className="text-cobalt hover:text-paper">
       My Dashboard
     </Link>
   );

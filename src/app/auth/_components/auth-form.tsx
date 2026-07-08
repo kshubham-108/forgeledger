@@ -200,17 +200,13 @@ export function AuthForm({
           {needsEmailConfirmation ? (
             <>
               We sent a confirmation link to <strong>{email}</strong>. Open it
-              to verify your address, then click <strong>Sign in</strong> in
-              the top right corner and log in with the email and password you
-              just set.
+              to verify your address, then come back and sign in.
             </>
           ) : (
-            <>
-              Your account is ready. Click <strong>Sign in</strong> in the top
-              right corner and log in with the email and password you just
-              set.
-            </>
-          )}
+            <>Your account is ready.</>
+          )}{" "}
+          Click <strong>Sign in</strong> in the top right corner and log in with
+          the email and password you just set.
         </p>
         <Link
           href="/auth/sign-in"

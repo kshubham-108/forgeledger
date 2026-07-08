@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ExplorePage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-12 py-12">
+    <div className="mx-auto w-full max-w-5xl px-6 py-12">
       <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
         Explore
       </p>
