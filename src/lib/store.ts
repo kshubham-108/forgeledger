@@ -170,3 +170,14 @@ export function replaceLog(entries: LogEntry[]) {
   window.localStorage.setItem(LOG_KEY, JSON.stringify(entries));
   emit();
 }
+
+/* Wipe the local profile + log — used on sign-out so a stale profile doesn't
+   keep showing (or leak into) whichever account signs in next on this
+   browser. Demo mode never calls this: there is no real sign-out there. */
+export function clearLocalData() {
+  profileCache = null;
+  logCache = [];
+  window.localStorage.removeItem(PROFILE_KEY);
+  window.localStorage.removeItem(LOG_KEY);
+  emit();
+}

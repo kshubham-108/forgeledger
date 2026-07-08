@@ -2,6 +2,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "./supabase/client";
+import { getAuthDisplayName } from "./use-auth";
 import {
   addCapabilitySnapshot,
   addCompletion,
@@ -266,7 +267,20 @@ export async function syncWithSupabase(): Promise<void> {
   try {
     const { data } = await supabase.auth.getSession();
     const userId = data.session?.user.id;
-    if (!userId || syncedUserId === userId) return;
+    if (!userId) return;
+
+    const authDisplayName = getAuthDisplayName(data.session?.user);
+    const cachedProfile = getLocalProfile();
+    if (
+      authDisplayName &&
+      cachedProfile &&
+      cachedProfile.displayName !== authDisplayName
+    ) {
+      saveProfile({ ...cachedProfile, displayName: authDisplayName });
+      void mirrorProfile({ ...cachedProfile, displayName: authDisplayName });
+    }
+
+    if (syncedUserId === userId) return;
     syncedUserId = userId;
 
     const [remoteProfile, remoteModules, remoteSnapshot, remoteCompletions] =
@@ -317,7 +331,10 @@ export async function syncWithSupabase(): Promise<void> {
           : localProfile?.snapshot;
         saveProfile({
           displayName:
-            remoteProfile.displayName ?? localProfile?.displayName ?? "Student",
+            authDisplayName ??
+            remoteProfile.displayName ??
+            localProfile?.displayName ??
+            "Student",
           universityId: localUniId,
           discipline:
             (remoteProfile.discipline as Profile["discipline"]) ??

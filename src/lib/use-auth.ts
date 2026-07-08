@@ -40,3 +40,42 @@ export function useAuthUser(): { user: User | null; ready: boolean } {
 
   return { user, ready };
 }
+
+/* The name captured at sign-up (auth-form.tsx writes it to user_metadata as
+   display_name) — the one reliable source for a student's real name, as
+   opposed to profile rows that may have been backfilled from an email
+   address. */
+export function getAuthDisplayName(
+  user: Pick<User, "user_metadata"> | null | undefined,
+): string | undefined {
+  const value = user?.user_metadata?.display_name;
+  return typeof value === "string" && value.trim() !== "" ? value.trim() : undefined;
+}
+
+function isEmailLocalPart(name: string, email: string | undefined): boolean {
+  if (!email) return false;
+  const prefix = email.split("@")[0]?.toLowerCase();
+  return prefix !== undefined && name.toLowerCase() === prefix;
+}
+
+/* First name for "Welcome back, …" — prefers auth metadata over a cached
+   profile name that may be the email username (jn24882-style DB fallback). */
+export function getWelcomeFirstName(
+  user: Pick<User, "user_metadata" | "email"> | null | undefined,
+  fallbackDisplayName?: string,
+): string {
+  const authName = getAuthDisplayName(user);
+  let fullName = authName;
+
+  if (!fullName && fallbackDisplayName) {
+    const fallback = fallbackDisplayName.trim();
+    if (fallback && !isEmailLocalPart(fallback, user?.email)) {
+      fullName = fallback;
+    }
+  }
+
+  if (!fullName) return "Student";
+
+  const first = fullName.split(/\s+/)[0];
+  return first !== "" ? first : "Student";
+}

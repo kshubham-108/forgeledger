@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import { disciplineLabels, getModulesForUniversity } from "@/lib/seed";
 import { saveProfileAndSync } from "@/lib/sync-writes";
+import { getWelcomeFirstName, useAuthUser } from "@/lib/use-auth";
 import type { Profile, SnapshotRatings } from "@/lib/types";
 
 const HOUR_OPTIONS = [1, 2, 3, 5];
@@ -15,6 +16,8 @@ const HOUR_OPTIONS = [1, 2, 3, 5];
   worry about the email/password gate.
 */
 export function FinishSetup({ profile }: { profile: Profile }) {
+  const { user } = useAuthUser();
+  const welcomeName = getWelcomeFirstName(user, profile.displayName);
   const [moduleIds, setModuleIds] = useState<string[]>([]);
   const [hoursPerWeek, setHoursPerWeek] = useState(3);
   const [snapshot, setSnapshot] = useState<SnapshotRatings>({});
@@ -46,7 +49,7 @@ export function FinishSetup({ profile }: { profile: Profile }) {
         Finish setting up
       </p>
       <p className="mt-3 font-display text-xl font-semibold text-ink">
-        One step left, {profile.displayName}
+        One step left, {welcomeName}
       </p>
       <p className="mt-2 text-sm text-ink-muted">
         {profile.discipline

@@ -70,7 +70,7 @@ export function LogView() {
         ))}
       </div>
 
-      <section className="margin-ruled mt-10">
+      <section className="mt-10">
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Build log

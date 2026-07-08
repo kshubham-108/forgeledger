@@ -8,6 +8,14 @@ import { getSupabaseEnv } from "@/lib/supabase/config";
   (via the mutated request) and the browser (via the response).
 
   In demo mode (no Supabase env vars) every request passes through untouched.
+
+  Note: this project is on a Next.js version where the `proxy.ts` rename
+  (see next.config docs) is not yet picked up by the file-convention scanner
+  — a build with `proxy.ts` produces no `ƒ Proxy` entry at all, while
+  `middleware.ts` correctly compiles to `ƒ Proxy (Middleware)`. Keep this
+  file named `middleware.ts` with the `middleware` export until upgrading
+  past that bug; re-verify with `next build` (look for the `ƒ Proxy` route
+  summary line) before ever renaming it again.
 */
 export async function middleware(request: NextRequest) {
   const env = getSupabaseEnv();
@@ -35,7 +43,23 @@ export async function middleware(request: NextRequest) {
   });
 
   /* Triggers a token refresh if the session has expired. Do not remove. */
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+
+  /* Dashboard is the primary authenticated destination (see AuthNav /
+     AuthGuard) — gate it server-side too, so a signed-out direct visit
+     redirects immediately instead of flashing the page first. Build pages
+     are deliberately left ungated here: they carry SEO/OpenGraph metadata
+     and are meant to stay crawlable and shareable; the "try it out" CTAs
+     that link to them are gated client-side instead (see GatedLink). */
+  if (!data.user && request.nextUrl.pathname.startsWith("/dashboard")) {
+    const redirectResponse = NextResponse.redirect(
+      new URL("/auth/sign-in", request.url),
+    );
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
+  }
 
   return response;
 }

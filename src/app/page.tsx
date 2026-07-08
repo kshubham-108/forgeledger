@@ -9,8 +9,11 @@ const FrontierTicker = dynamic(
     import("@/components/frontier-ticker").then((mod) => mod.FrontierTicker),
   {
     loading: () => (
-      <div className="border-y border-rule bg-card py-3" aria-hidden="true">
-        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-cobalt-soft" />
+      <div aria-hidden="true">
+        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 py-3 bg-transparent" />
+        <div className="border-y border-cobalt-soft bg-card py-3">
+          <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-cobalt-soft" />
+        </div>
       </div>
     ),
   },
@@ -340,69 +343,22 @@ export default function LandingPage() {
 
       {/* The teaching gap — HEPI 2025 */}
       <section className="relative border-y border-cobalt-soft bg-gradient-to-b from-cobalt-faint via-cobalt-soft to-mist">
-        <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-12 sm:grid-cols-[auto_auto_1fr] sm:items-center sm:gap-12">
-          <div>
-            <p className="font-display text-5xl font-semibold text-ink">92%</p>
-            <p className="mt-1 max-w-[12rem] text-xs leading-relaxed text-ink-muted">
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-16 sm:flex-row sm:items-start sm:justify-between">
+          <div className="text-center sm:text-left">
+            <p className="font-display text-6xl font-semibold text-ink sm:text-7xl lg:text-8xl">
+              92%
+            </p>
+            <p className="mx-auto mt-3 max-w-xs text-base leading-relaxed text-ink-muted sm:mx-0 sm:text-lg">
               of UK students already use AI in their studies
             </p>
           </div>
-          <div>
-            <p className="font-display text-5xl font-semibold text-cobalt-deep">
+          <div className="text-center sm:text-left">
+            <p className="font-display text-6xl font-semibold text-cobalt-deep sm:text-7xl lg:text-8xl">
               36%
             </p>
-            <p className="mt-1 max-w-[12rem] text-xs leading-relaxed text-ink-muted">
+            <p className="mx-auto mt-3 max-w-xs text-base leading-relaxed text-ink-muted sm:mx-0 sm:text-lg">
               have been taught how to use it well
             </p>
-          </div>
-          <div className="max-w-md">
-            <p className="text-sm leading-relaxed text-ink">
-              The gap isn&rsquo;t access — it&rsquo;s teaching. Lectures move
-              at term pace; the frontier moves weekly. Fluent closes the gap
-              with practice inside your modules, not another lecture.
-            </p>
-            <p className="mt-2 font-mono text-[11px] text-cobalt-deep">
-              HEPI Student Generative AI Survey 2025
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Why trust Fluent — plain commitments, not badges */}
-      <section className="relative border-y border-cobalt-soft bg-mist">
-        <div className="mx-auto w-full max-w-5xl px-6 py-16">
-          <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
-            Built to be trusted
-          </h2>
-          <div className="mt-8 grid gap-8 sm:grid-cols-3">
-            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
-              <h3 className="text-sm font-semibold text-ink">
-                Free tools only
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                Every build runs on tools with a free tier. You&rsquo;re never
-                asked to pay to keep up with classmates who can.
-              </p>
-            </div>
-            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
-              <h3 className="text-sm font-semibold text-ink">
-                Never does your work
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                Each build states what it trains and what it must never be
-                used for. Checking, citing and honest use are built into the
-                steps — not a policy page.
-              </p>
-            </div>
-            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
-              <h3 className="text-sm font-semibold text-ink">
-                Your log stays yours
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                Notes and progress live on your device in this release.
-                Nothing is shared, sold, or used to train models.
-              </p>
-            </div>
           </div>
         </div>
       </section>

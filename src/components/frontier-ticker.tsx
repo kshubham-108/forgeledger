@@ -8,7 +8,7 @@ import { advanceSourceLabels } from "@/lib/seed/labels";
 */
 export function FrontierTicker() {
   return (
-    <section aria-label="This week from the frontier" className="border-y border-cobalt-soft bg-card">
+    <section aria-label="This week from the frontier">
       <div className="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 py-3">
         <h2 className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
           This week from the frontier
@@ -17,7 +17,8 @@ export function FrontierTicker() {
           Fluent watches the feeds. You get the skill.
         </p>
       </div>
-      <div className="ticker">
+      <div className="border-y border-cobalt-soft bg-card">
+        <div className="ticker">
         <div className="ticker-track">
           {[0, 1].map((copy) => (
             <ul
@@ -41,6 +42,7 @@ export function FrontierTicker() {
               ))}
             </ul>
           ))}
+        </div>
         </div>
       </div>
     </section>

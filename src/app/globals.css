@@ -68,21 +68,6 @@ header :focus-visible {
   background: radial-gradient(circle, #4a47f022 0%, #4a47f000 70%);
 }
 
-/* Notebook margin rule: thin vertical accent line down the left of log blocks */
-.margin-ruled {
-  position: relative;
-}
-.margin-ruled::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 2.25rem;
-  width: 1px;
-  background: color-mix(in srgb, var(--color-cobalt) 28%, transparent);
-  pointer-events: none;
-}
-
 /* Progressive reveal: content rises in as it appears */
 @keyframes rise-in {
   from {
@@ -259,6 +244,114 @@ header :focus-visible {
   }
 }
 
+/*
+  "Welcome back" widget icon: the brain+circuit mark gently bobs while a
+  soft halo behind it breathes, so it reads as alive without being loud.
+*/
+.float-icon {
+  animation: icon-float 6s ease-in-out infinite;
+}
+@keyframes icon-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.glow-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+}
+
+/*
+  Starfield behind the "welcome back" card: two tiled layers of small dots
+  (stacked radial-gradients, so it scales to any card size without an image)
+  twinkling out of phase with each other, drifting on a very long loop.
+  Kept behind the copy/icon via -z-10 on the element in JSX.
+*/
+.star-field {
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 22%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1.2px 1.2px at 28% 8%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.4px 1.4px at 44% 34%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1px 1px at 61% 12%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.6px 1.6px at 76% 28%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1.2px 1.2px at 89% 6%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.3px 1.3px at 6% 52%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.5px 1.5px at 33% 63%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1px 1px at 52% 48%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.4px 1.4px at 70% 58%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1.2px 1.2px at 93% 44%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.5px 1.5px at 18% 82%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1px 1px at 40% 90%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent),
+    radial-gradient(1.3px 1.3px at 63% 80%, color-mix(in srgb, white 90%, transparent), transparent),
+    radial-gradient(1.4px 1.4px at 85% 86%, color-mix(in srgb, var(--color-cobalt-glow) 85%, transparent), transparent);
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  animation:
+    star-twinkle-a 5s ease-in-out infinite,
+    star-drift 100s linear infinite;
+}
+.star-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.2px 1.2px at 20% 14%, color-mix(in srgb, white 85%, transparent), transparent),
+    radial-gradient(1px 1px at 36% 40%, color-mix(in srgb, var(--color-cobalt-glow) 80%, transparent), transparent),
+    radial-gradient(1.4px 1.4px at 55% 20%, color-mix(in srgb, white 85%, transparent), transparent),
+    radial-gradient(1.1px 1.1px at 72% 46%, color-mix(in srgb, var(--color-cobalt-glow) 80%, transparent), transparent),
+    radial-gradient(1.3px 1.3px at 8% 68%, color-mix(in srgb, white 85%, transparent), transparent),
+    radial-gradient(1px 1px at 47% 74%, color-mix(in srgb, var(--color-cobalt-glow) 80%, transparent), transparent),
+    radial-gradient(1.4px 1.4px at 81% 68%, color-mix(in srgb, white 85%, transparent), transparent),
+    radial-gradient(1.2px 1.2px at 95% 90%, color-mix(in srgb, var(--color-cobalt-glow) 80%, transparent), transparent),
+    radial-gradient(1.1px 1.1px at 29% 94%, color-mix(in srgb, white 85%, transparent), transparent),
+    radial-gradient(1.3px 1.3px at 64% 96%, color-mix(in srgb, var(--color-cobalt-glow) 80%, transparent), transparent);
+  background-repeat: repeat;
+  background-size: 220px 220px;
+  animation:
+    star-twinkle-b 7s ease-in-out infinite,
+    star-drift 140s linear infinite reverse;
+}
+@keyframes star-twinkle-a {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+@keyframes star-twinkle-b {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+@keyframes star-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 120px 60px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rise-in,
   .stagger > *,
@@ -268,7 +361,11 @@ header :focus-visible {
   .glyph-float,
   .glyph-drift,
   .glyph-spin,
-  .glyph-spin-reverse {
+  .glyph-spin-reverse,
+  .float-icon,
+  .glow-pulse,
+  .star-field,
+  .star-field::after {
     animation: none;
   }
   .ticker {

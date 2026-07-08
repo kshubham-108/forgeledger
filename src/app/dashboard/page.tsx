@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuthGuard } from "@/components/auth-guard";
 import { LazyWeeklyPlan } from "@/components/lazy-weekly-plan";
+import { SignOutButton } from "@/components/sign-out-button";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -14,6 +15,7 @@ export default function DashboardPage() {
     <AuthGuard>
       <div className="mx-auto w-full max-w-5xl px-6 py-12">
         <LazyWeeklyPlan />
+        <SignOutButton />
       </div>
     </AuthGuard>
   );
