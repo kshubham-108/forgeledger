@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { FinishSetup } from "@/components/finish-setup";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import {
   advanceSourceLabels,
@@ -124,6 +125,14 @@ export function WeeklyPlan() {
         >
           Get started
         </Link>
+      </div>
+    );
+  }
+
+  if (profile.moduleIds.length === 0) {
+    return (
+      <div className="py-8">
+        <FinishSetup profile={profile} />
       </div>
     );
   }

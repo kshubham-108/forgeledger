@@ -6,10 +6,19 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default function SignUpPage() {
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ university?: string; discipline?: string }>;
+}) {
+  const params = await searchParams;
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-sm flex-col justify-center px-4 py-12">
-      <AuthForm mode="sign-up" />
+      <AuthForm
+        mode="sign-up"
+        initialUniversitySlug={params.university}
+        initialDiscipline={params.discipline}
+      />
     </div>
   );
 }

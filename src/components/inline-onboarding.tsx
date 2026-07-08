@@ -5,29 +5,37 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import {
+  disciplineLabels,
   getBuildsForModuleCodes,
+  getCoursesForUniversity,
   getModuleById,
   getModulesForUniversity,
   universities,
 } from "@/lib/seed";
 import { saveProfileAndSync } from "@/lib/data-bridge";
+import { useAuthUser } from "@/lib/use-auth";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useLog, useProfile } from "@/lib/use-store";
-import type { SnapshotRatings } from "@/lib/types";
+import type { Discipline, SnapshotRatings } from "@/lib/types";
 
 const HOUR_OPTIONS = [1, 2, 3, 5];
 
 /*
   Onboarding lives in the landing hero. Questions reveal progressively as
-  each answer lands, and the CTA shows a live count of matched builds so
-  every click gives feedback. The final micro-step — a capability
-  snapshot — is optional and skippable in one click.
+  each answer lands: university -> course -> (sign-up gate, if Supabase is
+  configured and there's no session yet) -> module -> hours -> optional
+  capability snapshot. Demo mode (no Supabase env vars) never gates on
+  sign-up — there's no backend to verify a university email against.
 */
 export function InlineOnboarding() {
   const router = useRouter();
   const profile = useProfile();
   const log = useLog();
+  const { user, ready } = useAuthUser();
+  const gated = isSupabaseConfigured();
 
   const [universityId, setUniversityId] = useState<string | null>(null);
+  const [discipline, setDiscipline] = useState<Discipline | null>(null);
   const [moduleIds, setModuleIds] = useState<string[]>([]);
   const [hoursPerWeek, setHoursPerWeek] = useState(3);
   const [snapshot, setSnapshot] = useState<SnapshotRatings>({});
@@ -56,14 +64,25 @@ export function InlineOnboarding() {
     );
   }
 
+  const university = universities.find((u) => u.id === universityId) ?? null;
+  const availableCourses = university ? getCoursesForUniversity(university.id) : [];
   const availableModules =
-    universityId === null ? [] : getModulesForUniversity(universityId);
+    university && discipline
+      ? getModulesForUniversity(university.id).filter(
+          (m) => m.discipline === discipline,
+        )
+      : [];
   const chosenCodes = moduleIds
     .map(getModuleById)
     .filter((m) => m !== undefined)
     .map((m) => m.code);
   const matchedBuilds = getBuildsForModuleCodes(chosenCodes).length;
   const hasRatings = Object.keys(snapshot).length > 0;
+
+  /* Once Supabase is configured, module picking (and everything after it)
+     is gated behind a sign-up verified against the chosen university's
+     email domain — handled on /auth/sign-up, not here. */
+  const needsAuthGate = gated && ready && user === null;
 
   function toggleModule(id: string) {
     setModuleIds((prev) =>
@@ -76,6 +95,7 @@ export function InlineOnboarding() {
     saveProfileAndSync({
       displayName: "Student",
       universityId,
+      discipline: discipline ?? undefined,
       moduleIds,
       hoursPerWeek,
       snapshot: withSnapshot && hasRatings ? snapshot : undefined,
@@ -87,7 +107,7 @@ export function InlineOnboarding() {
   return (
     <div className="border-2 border-ink bg-card px-5 py-6">
       <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
-        Start free · 30 seconds
+        Start free · a minute
       </p>
 
       {/* 01 — University */}
@@ -103,6 +123,7 @@ export function InlineOnboarding() {
               type="button"
               onClick={() => {
                 setUniversityId(uni.id);
+                setDiscipline(null);
                 setModuleIds([]);
               }}
               className={`rounded-sm border px-3 py-2 text-sm ${
@@ -117,16 +138,75 @@ export function InlineOnboarding() {
         </div>
         {universityId === null ? (
           <p className="mt-2 text-xs text-ink-muted">
-            Pilot catalogue — more universities each term.
+            25 universities in the pilot — more added each term.
           </p>
         ) : null}
       </fieldset>
 
-      {/* 02 — Modules, revealed once a university is picked */}
-      {universityId !== null ? (
+      {/* 02 — Course, revealed once a university is picked */}
+      {university !== null ? (
         <fieldset className="rise-in mt-6">
           <legend className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">02</span>
+            What course are you doing?
+          </legend>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {availableCourses.map((course) => (
+              <button
+                key={course}
+                type="button"
+                aria-pressed={discipline === course}
+                onClick={() => {
+                  setDiscipline(course);
+                  setModuleIds([]);
+                }}
+                className={`rounded-sm border px-3 py-2 text-sm ${
+                  discipline === course
+                    ? "border-cobalt bg-cobalt text-white"
+                    : "border-rule bg-paper text-ink hover:border-ink-muted"
+                }`}
+              >
+                {disciplineLabels[course]}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ) : null}
+
+      {/* Sign-up gate — only when Supabase is configured and no session yet */}
+      {university !== null && discipline !== null && needsAuthGate ? (
+        <div className="rise-in mt-6">
+          <p className="text-sm font-semibold text-ink">
+            <span className="mr-2 font-mono text-xs text-cobalt">03</span>
+            Verify your student email
+          </p>
+          <p className="mt-1 text-xs text-ink-muted">
+            One step left: sign up with your {university.name} email so we
+            know your modules are really yours.
+          </p>
+          <Link
+            href={`/auth/sign-up?university=${university.slug}&discipline=${discipline}`}
+            className="mt-4 inline-block w-full rounded-sm bg-cobalt px-5 py-3 text-center text-sm font-medium text-white hover:bg-cobalt-deep"
+          >
+            Continue with your {university.name} email
+          </Link>
+          <p className="mt-2 text-xs text-ink-muted">
+            Already have an account?{" "}
+            <Link
+              href="/auth/sign-in"
+              className="text-cobalt hover:text-cobalt-deep underline underline-offset-2"
+            >
+              Sign in
+            </Link>
+          </p>
+        </div>
+      ) : null}
+
+      {/* 03/04 — Modules, revealed once a course is picked (demo mode, or already signed in) */}
+      {university !== null && discipline !== null && !needsAuthGate ? (
+        <fieldset className="rise-in mt-6">
+          <legend className="text-sm font-semibold text-ink">
+            <span className="mr-2 font-mono text-xs text-cobalt">03</span>
             Tick your modules
           </legend>
           <div className="mt-2.5 flex flex-wrap gap-2">
@@ -156,11 +236,11 @@ export function InlineOnboarding() {
         </fieldset>
       ) : null}
 
-      {/* 03 — Hours, revealed once a module is ticked */}
+      {/* 04 — Hours, revealed once a module is ticked */}
       {moduleIds.length > 0 ? (
         <div className="rise-in mt-6">
           <p className="text-sm font-semibold text-ink">
-            <span className="mr-2 font-mono text-xs text-cobalt">03</span>
+            <span className="mr-2 font-mono text-xs text-cobalt">04</span>
             Hours you can honestly give a week
           </p>
           <div className="mt-2.5 flex gap-2">
@@ -182,11 +262,11 @@ export function InlineOnboarding() {
         </div>
       ) : null}
 
-      {/* 04 — Optional snapshot + start, revealed with 03 */}
+      {/* 05 — Optional snapshot + start, revealed with 04 */}
       {moduleIds.length > 0 ? (
         <div className="rise-in mt-6">
           <p className="text-sm font-semibold text-ink">
-            <span className="mr-2 font-mono text-xs text-cobalt">04</span>
+            <span className="mr-2 font-mono text-xs text-cobalt">05</span>
             Optional: how confident are you today?
           </p>
           <p className="mt-1 text-xs text-ink-muted">

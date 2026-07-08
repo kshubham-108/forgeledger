@@ -26,7 +26,7 @@ const FAQS = [
   },
   {
     q: "Do I need to know how to code?",
-    a: "No. Builds are designed for your discipline — Psychology, Law, History, Nursing, Business and more — and most involve no code at all.",
+    a: "No. Builds are designed for your discipline — Psychology, Law, History, Nursing, Business, Economics, Maths, Medicine and more — and most involve no code at all.",
   },
   {
     q: "What happens to my data?",
@@ -77,6 +77,21 @@ const CAPABILITIES = [
     code: "BMAN2011",
     line: "Build analysis workflows where every number has a source.",
     slug: "business-competitor-scan",
+  },
+  {
+    code: "ECON2237",
+    line: "Interrogate the assumptions baked into an AI data interpretation.",
+    slug: "econ-model-assumption-audit",
+  },
+  {
+    code: "MATH2148",
+    line: "Hunt down the invalid step in an AI-generated proof.",
+    slug: "maths-proof-checker",
+  },
+  {
+    code: "MED2269",
+    line: "Check every clinical claim against NICE and Cochrane before it counts.",
+    slug: "medicine-differential-check",
   },
 ];
 

@@ -72,7 +72,10 @@ export default function RootLayout({
             >
               Fluent
             </Link>
-            <div className="flex items-baseline gap-6 text-sm">
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm">
+              <Link href="/explore" className="text-paper/75 hover:text-paper">
+                Explore
+              </Link>
               <Link
                 href="/dashboard"
                 className="text-paper/75 hover:text-paper"
@@ -88,7 +91,7 @@ export default function RootLayout({
         </header>
         <main className="flex-1">{children}</main>
         <footer className="border-t border-rule bg-card">
-          <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-10 sm:grid-cols-[2fr_1fr_1fr]">
+          <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-10 sm:grid-cols-[2fr_1fr_1fr_1fr]">
             <div>
               <p className="font-display text-lg font-semibold tracking-tight text-ink">
                 Fluent
@@ -104,12 +107,22 @@ export default function RootLayout({
             </div>
             <nav aria-label="Footer">
               <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
-                Explore
+                Site
               </h2>
               <ul className="mt-3 flex flex-col gap-2 text-sm">
                 <li>
                   <Link href="/" className="text-ink hover:text-cobalt">
                     Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/explore" className="text-ink hover:text-cobalt">
+                    Explore
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/builds" className="text-ink hover:text-cobalt">
+                    All builds
                   </Link>
                 </li>
                 <li>
@@ -125,12 +138,29 @@ export default function RootLayout({
                     My log
                   </Link>
                 </li>
+              </ul>
+            </nav>
+            <nav aria-label="Company">
+              <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+                Company
+              </h2>
+              <ul className="mt-3 flex flex-col gap-2 text-sm">
+                <li>
+                  <Link href="/about" className="text-ink hover:text-cobalt">
+                    About
+                  </Link>
+                </li>
                 <li>
                   <Link
-                    href="/builds/psych-literature-pipeline"
+                    href="/privacy"
                     className="text-ink hover:text-cobalt"
                   >
-                    Example build
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="text-ink hover:text-cobalt">
+                    Terms
                   </Link>
                 </li>
               </ul>

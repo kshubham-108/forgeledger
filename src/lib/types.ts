@@ -3,6 +3,9 @@ export type University = {
   slug: string;
   name: string;
   city: string;
+  /* Student email domain suffix(es), e.g. ["bristol.ac.uk"]. Checked as
+     "ends with", so college/department subdomains (Oxbridge) match too. */
+  emailDomains: string[];
 };
 
 export type Module = {
@@ -20,7 +23,10 @@ export type Discipline =
   | "history"
   | "business"
   | "nursing"
-  | "computer-science";
+  | "computer-science"
+  | "economics"
+  | "maths"
+  | "medicine";
 
 export type Competency =
   | "prompt-craft"
@@ -79,6 +85,10 @@ export type SnapshotRatings = Partial<Record<Competency, number>>;
 export type Profile = {
   displayName: string;
   universityId: string;
+  /* The course chosen at registration — same vocabulary as Module/MicroBuild
+     discipline. Optional for backward compatibility with profiles saved
+     before this field existed. */
+  discipline?: Discipline;
   moduleIds: string[];
   hoursPerWeek: number;
   /* Optional capability snapshot taken at onboarding (or later). */

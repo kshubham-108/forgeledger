@@ -7,6 +7,7 @@ import {
   microBuilds,
 } from "@/lib/seed";
 import { CompleteBuildForm } from "@/components/complete-build-form";
+import { SITE_URL } from "@/lib/site";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -46,8 +47,26 @@ export default async function BuildPage({ params }: PageProps) {
   const build = getBuildBySlug(slug);
   if (!build) notFound();
 
+  const learningResource = {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    name: build.title,
+    description: build.summary,
+    url: `${SITE_URL}/builds/${build.slug}`,
+    timeRequired: `PT${build.estMinutes}M`,
+    educationalLevel: "Undergraduate",
+    teaches: build.competencies.map((c) => competencyLabels[c]),
+    inLanguage: "en-GB",
+    isAccessibleForFree: true,
+    provider: { "@type": "Organization", name: "Fluent", url: SITE_URL },
+  };
+
   return (
     <div className="mx-auto w-full max-w-2xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(learningResource) }}
+      />
       <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
         25-min build · {disciplineLabels[build.discipline]}
       </p>

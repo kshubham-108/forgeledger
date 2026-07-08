@@ -1,0 +1,21 @@
+version: 2
+
+updates:
+  # npm dependencies (app + dev deps)
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      # Bundle low-risk patch/minor bumps into one PR instead of one-per-package.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  # Keep the actions used in our own workflows current too.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

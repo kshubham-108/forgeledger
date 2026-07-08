@@ -34,6 +34,7 @@ export type ProfileRow = {
   id: string;
   display_name: string | null;
   university_id: string | null;
+  discipline: string | null;
   hours_per_week: number | null;
   created_at: string;
 };
@@ -43,6 +44,7 @@ export type UniversityRow = {
   slug: string;
   name: string;
   city: string;
+  student_email_domains: string[];
   created_at: string;
 };
 
@@ -142,6 +144,7 @@ export type Profile = {
   id: string;
   displayName: string | null;
   universityId: string | null;
+  discipline: string | null;
   hoursPerWeek: number | null;
   createdAt: string;
 };
@@ -151,6 +154,7 @@ export type University = {
   slug: string;
   name: string;
   city: string;
+  studentEmailDomains: string[];
 };
 
 export type Module = {

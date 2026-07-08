@@ -43,6 +43,7 @@ function mapProfile(row: ProfileRow): Profile {
     id: row.id,
     displayName: row.display_name,
     universityId: row.university_id,
+    discipline: row.discipline,
     hoursPerWeek: row.hours_per_week,
     createdAt: row.created_at,
   };
@@ -104,12 +105,75 @@ export async function listUniversities(
   if (!supabase) return [];
   const { data, error } = await supabase
     .from("universities")
-    .select("id, slug, name, city")
+    .select("id, slug, name, city, student_email_domains")
     .order("name");
   if (error || !data) return [];
-  return (data as Pick<UniversityRow, "id" | "slug" | "name" | "city">[]).map(
-    (row) => ({ id: row.id, slug: row.slug, name: row.name, city: row.city }),
-  );
+  return (
+    data as Pick<
+      UniversityRow,
+      "id" | "slug" | "name" | "city" | "student_email_domains"
+    >[]
+  ).map((row) => ({
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    city: row.city,
+    studentEmailDomains: row.student_email_domains ?? [],
+  }));
+}
+
+/** A single university by id — used to look up its email domains for the
+ * sign-up form's live validation. Public read, works signed out. */
+export async function getUniversityById(
+  supabase: SupabaseClient | null,
+  universityId: string,
+): Promise<University | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("universities")
+    .select("id, slug, name, city, student_email_domains")
+    .eq("id", universityId)
+    .maybeSingle();
+  if (error || !data) return null;
+  const row = data as Pick<
+    UniversityRow,
+    "id" | "slug" | "name" | "city" | "student_email_domains"
+  >;
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    city: row.city,
+    studentEmailDomains: row.student_email_domains ?? [],
+  };
+}
+
+/** A single university by slug — slugs are the stable join key between the
+ * local demo catalogue (src/lib/seed.ts) and the Supabase catalogue, so the
+ * sign-up form can resolve a remote uuid from a slug picked against local
+ * seed data. Public read, works signed out. */
+export async function getUniversityBySlug(
+  supabase: SupabaseClient | null,
+  slug: string,
+): Promise<University | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from("universities")
+    .select("id, slug, name, city, student_email_domains")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error || !data) return null;
+  const row = data as Pick<
+    UniversityRow,
+    "id" | "slug" | "name" | "city" | "student_email_domains"
+  >;
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    city: row.city,
+    studentEmailDomains: row.student_email_domains ?? [],
+  };
 }
 
 /** Modules for one university, ordered by code. */
@@ -156,6 +220,7 @@ export async function upsertProfile(
   patch: {
     displayName?: string | null;
     universityId?: string | null;
+    discipline?: string | null;
     hoursPerWeek?: number | null;
   },
 ): Promise<Profile | null> {
@@ -166,6 +231,7 @@ export async function upsertProfile(
   const row: Record<string, unknown> = { id: userId };
   if (patch.displayName !== undefined) row.display_name = patch.displayName;
   if (patch.universityId !== undefined) row.university_id = patch.universityId;
+  if (patch.discipline !== undefined) row.discipline = patch.discipline;
   if (patch.hoursPerWeek !== undefined) row.hours_per_week = patch.hoursPerWeek;
 
   const { data, error } = await supabase

@@ -185,6 +185,7 @@ async function mirrorProfile(profile: Profile) {
     await upsertProfile(supabase, {
       displayName: profile.displayName,
       universityId: map?.localUniToRemote.get(profile.universityId) ?? null,
+      discipline: profile.discipline ?? null,
       hoursPerWeek: profile.hoursPerWeek,
     });
     if (map) {
@@ -326,6 +327,9 @@ export async function syncWithSupabase(): Promise<void> {
           displayName:
             remoteProfile.displayName ?? localProfile?.displayName ?? "Student",
           universityId: localUniId,
+          discipline:
+            (remoteProfile.discipline as Profile["discipline"]) ??
+            localProfile?.discipline,
           moduleIds,
           hoursPerWeek:
             remoteProfile.hoursPerWeek ?? localProfile?.hoursPerWeek ?? 3,
