@@ -12,8 +12,9 @@ type GatedLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
 
 /*
   Build and example CTAs: signed-out visitors go to sign-in first.
-  In demo mode (no Supabase) we still send them to /auth/sign-in, which
-  explains that accounts need a connected backend.
+  In demo mode (no Supabase configured) there's no backend to sign in
+  against, so links behave exactly as they did before this gate existed —
+  gating only kicks in once real accounts are possible.
 */
 export function GatedLink({ href, onClick, children, ...rest }: GatedLinkProps) {
   const router = useRouter();
@@ -23,7 +24,7 @@ export function GatedLink({ href, onClick, children, ...rest }: GatedLinkProps) 
     onClick?.(event);
     if (event.defaultPrevented) return;
 
-    const needsAuth = isSupabaseConfigured() ? !user : true;
+    const needsAuth = isSupabaseConfigured() && !user;
     if (ready && needsAuth) {
       event.preventDefault();
       router.push("/auth/sign-in");

@@ -35,7 +35,23 @@ export async function middleware(request: NextRequest) {
   });
 
   /* Triggers a token refresh if the session has expired. Do not remove. */
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+
+  /* Dashboard is the primary authenticated destination (see AuthNav /
+     AuthGuard) — gate it server-side too, so a signed-out direct visit
+     redirects immediately instead of flashing the page first. Build pages
+     are deliberately left ungated here: they carry SEO/OpenGraph metadata
+     and are meant to stay crawlable and shareable; the "try it out" CTAs
+     that link to them are gated client-side instead (see GatedLink). */
+  if (!data.user && request.nextUrl.pathname.startsWith("/dashboard")) {
+    const redirectResponse = NextResponse.redirect(
+      new URL("/auth/sign-in", request.url),
+    );
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie);
+    });
+    return redirectResponse;
+  }
 
   return response;
 }

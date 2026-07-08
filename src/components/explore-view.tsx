@@ -57,7 +57,7 @@ export function ExploreView() {
         ))}
       </div>
 
-      <div className="margin-ruled mt-8">
+      <div className="mt-8">
         <div className="border-b-2 border-ink pb-2">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             {disciplineLabels[course]} builds
