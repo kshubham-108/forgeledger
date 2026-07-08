@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import { disciplineLabels, getModulesForUniversity } from "@/lib/seed";
-import { saveProfileAndSync } from "@/lib/data-bridge";
+import { saveProfileAndSync } from "@/lib/sync-writes";
 import type { Profile, SnapshotRatings } from "@/lib/types";
 
 const HOUR_OPTIONS = [1, 2, 3, 5];

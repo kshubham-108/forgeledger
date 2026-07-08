@@ -1,4 +1,5 @@
-import { advanceSourceLabels, advances } from "@/lib/seed";
+import { advances } from "@/lib/seed/advances";
+import { advanceSourceLabels } from "@/lib/seed/labels";
 
 /*
   "This week from the frontier" — a slow CSS marquee of recent advances

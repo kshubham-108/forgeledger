@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { GatedLink } from "@/components/gated-link";
 import {
   competencyLabels,
   disciplineLabels,
@@ -108,12 +108,12 @@ export function ExploreView() {
                         .join(" · ")}
                     </p>
                   ) : null}
-                  <Link
+                  <GatedLink
                     href={`/builds/${build.slug}`}
                     className="mt-3 inline-block font-mono text-xs text-cobalt hover:text-cobalt-deep"
                   >
                     See this build &rarr;
-                  </Link>
+                  </GatedLink>
                 </li>
               );
             })}

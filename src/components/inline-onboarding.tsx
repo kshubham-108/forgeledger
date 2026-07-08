@@ -5,14 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import {
-  disciplineLabels,
-  getBuildsForModuleCodes,
   getCoursesForUniversity,
-  getModuleById,
   getModulesForUniversity,
-  universities,
-} from "@/lib/seed";
-import { saveProfileAndSync } from "@/lib/data-bridge";
+} from "@/lib/seed/modules";
+import { disciplineLabels } from "@/lib/seed/labels";
+import { universities } from "@/lib/seed/universities";
+import { saveProfileAndSync } from "@/lib/sync-writes";
 import { useAuthUser } from "@/lib/use-auth";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useLog, useProfile } from "@/lib/use-store";
@@ -72,11 +70,6 @@ export function InlineOnboarding() {
           (m) => m.discipline === discipline,
         )
       : [];
-  const chosenCodes = moduleIds
-    .map(getModuleById)
-    .filter((m) => m !== undefined)
-    .map((m) => m.code);
-  const matchedBuilds = getBuildsForModuleCodes(chosenCodes).length;
   const hasRatings = Object.keys(snapshot).length > 0;
 
   /* Once Supabase is configured, module picking (and everything after it)
@@ -281,9 +274,7 @@ export function InlineOnboarding() {
             onClick={() => finish(true)}
             className="mt-5 w-full rounded-sm bg-cobalt px-5 py-3 text-sm font-medium text-white hover:bg-cobalt-deep"
           >
-            {matchedBuilds > 0
-              ? `Start — ${matchedBuilds} build${matchedBuilds === 1 ? "" : "s"} matched to your modules`
-              : "Start building"}
+            Start building
           </button>
           {hasRatings ? null : (
             <button

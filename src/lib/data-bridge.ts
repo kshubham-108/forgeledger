@@ -19,19 +19,12 @@ import type {
   CapabilityRatings,
   Completion,
 } from "./supabase/types";
+import type { MicroBuild, Module, University } from "./types";
 import {
-  getBuildBySlug,
-  getModuleById,
-  modules as seedModules,
-  universities as seedUniversities,
-} from "./seed";
-import {
-  addLogEntry,
   getLog,
   getProfile as getLocalProfile,
   replaceLog,
   saveProfile,
-  saveSnapshot,
   serialFor,
 } from "./store";
 import type { Competency, LogEntry, Profile, SnapshotRatings } from "./types";
@@ -99,9 +92,25 @@ type CatalogueMap = {
 
 let catalogueMapPromise: Promise<CatalogueMap | null> | null = null;
 
+async function loadSeedCatalogue(): Promise<{
+  seedModules: Module[];
+  seedUniversities: University[];
+  getBuildBySlug: (slug: string) => MicroBuild | undefined;
+  getModuleById: (id: string) => Module | undefined;
+}> {
+  const seed = await import("./seed");
+  return {
+    seedModules: seed.modules,
+    seedUniversities: seed.universities,
+    getBuildBySlug: seed.getBuildBySlug,
+    getModuleById: seed.getModuleById,
+  };
+}
+
 async function loadCatalogueMap(
   supabase: SupabaseClient,
 ): Promise<CatalogueMap | null> {
+  const { seedModules, seedUniversities } = await loadSeedCatalogue();
   const remoteUnis = await listUniversities(supabase);
   if (remoteUnis.length === 0) return null;
 
@@ -159,25 +168,7 @@ async function getSessionClient(): Promise<SupabaseClient | null> {
 // Bridged writes: local first (synchronous), Supabase mirror in the background
 // ---------------------------------------------------------------------------
 
-export function saveProfileAndSync(profile: Profile) {
-  saveProfile(profile);
-  void mirrorProfile(profile);
-}
-
-export function saveSnapshotAndSync(snapshot: SnapshotRatings) {
-  saveSnapshot(snapshot);
-  void mirrorSnapshot(snapshot);
-}
-
-export function addLogEntryAndSync(
-  entry: Omit<LogEntry, "id" | "serial" | "completedAt">,
-): LogEntry {
-  const full = addLogEntry(entry);
-  void mirrorCompletion(full);
-  return full;
-}
-
-async function mirrorProfile(profile: Profile) {
+export async function mirrorProfile(profile: Profile) {
   try {
     const supabase = await getSessionClient();
     if (!supabase) return;
@@ -202,7 +193,7 @@ async function mirrorProfile(profile: Profile) {
   }
 }
 
-async function mirrorSnapshot(snapshot: SnapshotRatings) {
+export async function mirrorSnapshot(snapshot: SnapshotRatings) {
   try {
     const supabase = await getSessionClient();
     if (!supabase) return;
@@ -212,7 +203,7 @@ async function mirrorSnapshot(snapshot: SnapshotRatings) {
   }
 }
 
-async function mirrorCompletion(entry: LogEntry) {
+export async function mirrorCompletion(entry: LogEntry) {
   try {
     const supabase = await getSessionClient();
     if (!supabase) return;
@@ -237,6 +228,7 @@ function completionToLogEntry(
   index: number,
   profileModuleCodes: Set<string>,
   existingBySlug: Map<string, LogEntry>,
+  getBuildBySlug: (slug: string) => MicroBuild | undefined,
 ): LogEntry {
   const previous = existingBySlug.get(completion.buildSlug);
   const build = getBuildBySlug(completion.buildSlug);
@@ -344,6 +336,7 @@ export async function syncWithSupabase(): Promise<void> {
     const finalCompletions =
       missing.length > 0 ? await listCompletions(supabase) : remoteCompletions;
     if (finalCompletions.length > 0) {
+      const { getModuleById, getBuildBySlug } = await loadSeedCatalogue();
       const profileCodes = new Set(
         (getLocalProfile()?.moduleIds ?? [])
           .map((id) => getModuleById(id)?.code)
@@ -353,7 +346,13 @@ export async function syncWithSupabase(): Promise<void> {
       const oldestFirst = [...finalCompletions].reverse();
       replaceLog(
         oldestFirst.map((completion, index) =>
-          completionToLogEntry(completion, index, profileCodes, existingBySlug),
+          completionToLogEntry(
+            completion,
+            index,
+            profileCodes,
+            existingBySlug,
+            getBuildBySlug,
+          ),
         ),
       );
     }

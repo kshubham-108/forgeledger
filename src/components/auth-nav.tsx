@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { resetSyncState, syncWithSupabase } from "@/lib/data-bridge";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { useAuthUser } from "@/lib/use-auth";
 
@@ -15,11 +14,13 @@ export function AuthNav() {
   const { user, ready } = useAuthUser();
 
   useEffect(() => {
-    if (user) {
-      void syncWithSupabase();
-    } else {
-      resetSyncState();
-    }
+    void import("@/lib/data-bridge").then((bridge) => {
+      if (user) {
+        void bridge.syncWithSupabase();
+      } else {
+        bridge.resetSyncState();
+      }
+    });
   }, [user]);
 
   if (!isSupabaseConfigured() || !ready) return null;
@@ -33,13 +34,8 @@ export function AuthNav() {
   }
 
   return (
-    <form method="post" action="/auth/sign-out">
-      <button
-        type="submit"
-        className="cursor-pointer text-sm text-paper/75 hover:text-paper"
-      >
-        Sign out
-      </button>
-    </form>
+    <Link href="/dashboard" className="text-cobalt hover:text-paper">
+      My Dashboard
+    </Link>
   );
 }

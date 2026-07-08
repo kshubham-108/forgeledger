@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { BuildLogSection } from "@/components/build-log-section";
 import { FinishSetup } from "@/components/finish-setup";
+import { GatedLink } from "@/components/gated-link";
 import { SnapshotRater } from "@/components/snapshot-rater";
 import {
   advanceSourceLabels,
@@ -13,7 +15,7 @@ import {
   getModuleById,
   snapshotCompetencies,
 } from "@/lib/seed";
-import { saveSnapshotAndSync } from "@/lib/data-bridge";
+import { saveSnapshotAndSync } from "@/lib/sync-writes";
 import { useLog, useProfile } from "@/lib/use-store";
 import type { Competency, SnapshotRatings } from "@/lib/types";
 
@@ -173,17 +175,15 @@ export function WeeklyPlan() {
   return (
     <div>
       <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
-        This week
+        Your week
       </p>
       <h1 className="mt-3 font-display text-3xl font-semibold text-ink">
-        {profile.displayName}&apos;s week
+        Your week, mapped to the frontier
       </h1>
       <p className="mt-2 text-sm text-ink-muted">
         {chosenModules.length} module{chosenModules.length === 1 ? "" : "s"} ·{" "}
-        {profile.hoursPerWeek}h a week ·{" "}
-        <Link href="/ledger" className="text-cobalt hover:text-cobalt-deep">
-          {log.length} build{log.length === 1 ? "" : "s"} in your log
-        </Link>
+        {profile.hoursPerWeek}h a week · {log.length} build
+        {log.length === 1 ? "" : "s"} in your log
       </p>
 
       {/* Personal progress — measured against your own plan */}
@@ -279,18 +279,27 @@ export function WeeklyPlan() {
                       Done
                     </span>
                   ) : (
-                    <Link
+                    <GatedLink
                       href={`/builds/${build.slug}`}
                       className="shrink-0 rounded-sm bg-cobalt px-4 py-2 text-center text-sm font-medium text-white hover:bg-cobalt-deep"
                     >
                       Start build
-                    </Link>
+                    </GatedLink>
                   )}
                 </li>
               );
             })}
           </ul>
         )}
+      </section>
+
+      <section className="margin-ruled mt-10">
+        <div className="border-b-2 border-ink pb-2">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
+            Your build log
+          </h2>
+        </div>
+        <BuildLogSection />
       </section>
 
       {/* Latest in your field: the frontier feed, filtered to your modules */}
@@ -350,12 +359,12 @@ export function WeeklyPlan() {
                           Linked build done ✓
                         </span>
                       ) : (
-                        <Link
+                        <GatedLink
                           href={`/builds/${advance.relatedBuildSlug}`}
                           className="font-mono text-xs text-cobalt hover:text-cobalt-deep"
                         >
                           Turn it into a skill — 25-min build &rarr;
-                        </Link>
+                        </GatedLink>
                       )}
                     </div>
                   ) : null}

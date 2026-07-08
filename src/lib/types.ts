@@ -60,7 +60,7 @@ export type MicroBuild = {
     /* The checking habit baked into the exercise itself. */
     builtInCheck: string;
   };
-  /* Suggestion for the optional personal note when logging the build. */
+  /* Suggestion for the required prompt note when logging the build. */
   notePrompt: string;
 };
 
@@ -107,7 +107,8 @@ export type LogEntry = {
   /* Per-competency confidence after the build. */
   competencyRatings?: Partial<Record<Competency, number>>;
   timeSpentMin: number;
-  /* Optional note about what you made, kept for your own reference. */
+  /* The prompt(s) you used and what you made — required, min 40 characters,
+     kept for your own reference. */
   note: string;
   noteLink?: string;
   groundRulesConfirmed?: boolean;

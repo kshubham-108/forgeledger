@@ -7,6 +7,7 @@ import {
   microBuilds,
 } from "@/lib/seed";
 import { CompleteBuildForm } from "@/components/complete-build-form";
+import { AuthGuard } from "@/components/auth-guard";
 import { SITE_URL } from "@/lib/site";
 
 type PageProps = {
@@ -62,6 +63,7 @@ export default async function BuildPage({ params }: PageProps) {
   };
 
   return (
+    <AuthGuard>
     <div className="mx-auto w-full max-w-2xl px-6 py-12">
       <script
         type="application/ld+json"
@@ -192,5 +194,6 @@ export default async function BuildPage({ params }: PageProps) {
         competencies={build.competencies}
       />
     </div>
+    </AuthGuard>
   );
 }

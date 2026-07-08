@@ -27,10 +27,10 @@ export default function NotFound() {
           Back home
         </Link>
         <Link
-          href="/builds"
+          href="/explore"
           className="rounded-sm border border-rule bg-card px-5 py-2.5 text-sm font-medium text-ink hover:border-ink-muted"
         >
-          Browse all builds
+          Explore builds
         </Link>
       </div>
     </div>

@@ -1,8 +1,20 @@
-import Link from "next/link";
-import { FrontierTicker } from "@/components/frontier-ticker";
-import { InlineOnboarding } from "@/components/inline-onboarding";
+import dynamic from "next/dynamic";
+import { LazyInlineOnboarding } from "@/components/lazy-inline-onboarding";
+import { GatedLink } from "@/components/gated-link";
 import { RotatingWord } from "@/components/rotating-word";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
+
+const FrontierTicker = dynamic(
+  () =>
+    import("@/components/frontier-ticker").then((mod) => mod.FrontierTicker),
+  {
+    loading: () => (
+      <div className="border-y border-rule bg-card py-3" aria-hidden="true">
+        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-rule" />
+      </div>
+    ),
+  },
+);
 
 /* Honest FAQs — mirrors what UK student sites (Save the Student, UCAS)
    do well: question-format headings answering real objections. Rendered
@@ -44,55 +56,6 @@ const ROTATING_SUBJECTS = [
   "Economics",
   "Maths",
   "Medicine",
-];
-
-/* What you'll be able to do — one line per discipline, tied to a real build. */
-const CAPABILITIES = [
-  {
-    code: "PSYC2017",
-    line: "Run an AI literature search — and catch every citation it invents.",
-    slug: "psych-literature-pipeline",
-  },
-  {
-    code: "LAW2041",
-    line: "Spot fabricated case law before it reaches your notes.",
-    slug: "law-issue-spotting-chain",
-  },
-  {
-    code: "HIST2260",
-    line: "Brief a deep-research agent well — and see where it flattens the debate.",
-    slug: "history-deep-research-map",
-  },
-  {
-    code: "COMP2001",
-    line: "Make a coding agent write to your spec, tests first.",
-    slug: "cs-data-cleaner",
-  },
-  {
-    code: "NURS2301",
-    line: "Check AI-drafted patient information claim by claim, the NHS way.",
-    slug: "nursing-patient-leaflet",
-  },
-  {
-    code: "BMAN2011",
-    line: "Build analysis workflows where every number has a source.",
-    slug: "business-competitor-scan",
-  },
-  {
-    code: "ECON2237",
-    line: "Interrogate the assumptions baked into an AI data interpretation.",
-    slug: "econ-model-assumption-audit",
-  },
-  {
-    code: "MATH2148",
-    line: "Hunt down the invalid step in an AI-generated proof.",
-    slug: "maths-proof-checker",
-  },
-  {
-    code: "MED2269",
-    line: "Check every clinical claim against NICE and Cochrane before it counts.",
-    slug: "medicine-differential-check",
-  },
 ];
 
 /*
@@ -290,16 +253,16 @@ export default function LandingPage() {
             actually taking. Not another course — practice, in your subject.
           </p>
           <p className="mt-6">
-            <Link
+            <GatedLink
               href="/builds/psych-literature-pipeline"
               className="font-mono text-xs text-cobalt hover:text-cobalt-deep"
             >
               See an example build &rarr;
-            </Link>
+            </GatedLink>
           </p>
         </div>
         <div className="lg:pt-2">
-          <InlineOnboarding />
+          <LazyInlineOnboarding />
         </div>
       </section>
 
@@ -353,12 +316,12 @@ export default function LandingPage() {
               minutes, free tools.
             </p>
             <p className="mt-2">
-              <Link
+              <GatedLink
                 href="/builds/history-deep-research-map"
                 className="font-mono text-[11px] text-cobalt hover:text-cobalt-deep"
               >
                 Open this build &rarr;
-              </Link>
+              </GatedLink>
             </p>
           </div>
         </div>
@@ -392,41 +355,6 @@ export default function LandingPage() {
             </p>
           </div>
         </div>
-      </section>
-
-      {/* What you'll be able to do */}
-      <section className="relative mx-auto w-full max-w-5xl px-6 py-16">
-        <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
-          <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
-            What you&rsquo;ll be able to do
-          </h2>
-          <span className="font-mono text-xs text-ink-muted">
-            25 min each · free tools
-          </span>
-        </div>
-        <ul>
-          {CAPABILITIES.map((cap) => (
-            <li
-              key={cap.slug + cap.code}
-              className="flex flex-col gap-2 border-b border-rule bg-card px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6"
-            >
-              <span className="w-24 shrink-0 rounded-sm bg-cobalt-faint px-1.5 py-0.5 text-center font-mono text-[11px] text-cobalt-deep">
-                {cap.code}
-              </span>
-              <p className="min-w-0 flex-1 text-sm text-ink">{cap.line}</p>
-              <Link
-                href={`/builds/${cap.slug}`}
-                className="shrink-0 font-mono text-xs text-cobalt hover:text-cobalt-deep"
-              >
-                Try the build &rarr;
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 text-xs leading-relaxed text-ink-muted">
-          Skills are self-paced and logged privately for your own reference —
-          this is about what you can do, not what you can show.
-        </p>
       </section>
 
       {/* Why trust Fluent — plain commitments, not badges */}
@@ -503,12 +431,12 @@ export default function LandingPage() {
               build is ready today.
             </p>
           </div>
-          <Link
+          <GatedLink
             href="/builds/psych-literature-pipeline"
             className="shrink-0 rounded-sm bg-cobalt px-6 py-3 text-sm font-medium text-white hover:bg-cobalt-deep"
           >
             Try an example build
-          </Link>
+          </GatedLink>
         </div>
       </section>
     </div>

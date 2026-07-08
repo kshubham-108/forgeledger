@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist_Mono, Instrument_Sans } from "next/font/google";
 import Link from "next/link";
-import { AuthNav } from "@/components/auth-nav";
+import { MainNav } from "@/components/main-nav";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -65,29 +65,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <header className="border-b-2 border-cobalt bg-ink">
-          <nav className="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 py-4">
-            <Link
-              href="/"
-              className="font-display text-xl font-semibold tracking-tight text-paper"
-            >
-              Fluent
-            </Link>
-            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1 text-sm">
-              <Link href="/explore" className="text-paper/75 hover:text-paper">
-                Explore
-              </Link>
-              <Link
-                href="/dashboard"
-                className="text-paper/75 hover:text-paper"
-              >
-                This week
-              </Link>
-              <Link href="/ledger" className="text-paper/75 hover:text-paper">
-                My log
-              </Link>
-              <AuthNav />
-            </div>
-          </nav>
+          <MainNav />
         </header>
         <main className="flex-1">{children}</main>
         <footer className="border-t border-rule bg-card">
@@ -116,26 +94,16 @@ export default function RootLayout({
                   </Link>
                 </li>
                 <li>
-                  <Link href="/explore" className="text-ink hover:text-cobalt">
-                    Explore
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/builds" className="text-ink hover:text-cobalt">
-                    All builds
-                  </Link>
-                </li>
-                <li>
                   <Link
                     href="/dashboard"
                     className="text-ink hover:text-cobalt"
                   >
-                    This week
+                    Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link href="/ledger" className="text-ink hover:text-cobalt">
-                    My log
+                  <Link href="/explore" className="text-ink hover:text-cobalt">
+                    Explore
                   </Link>
                 </li>
               </ul>
@@ -145,11 +113,6 @@ export default function RootLayout({
                 Company
               </h2>
               <ul className="mt-3 flex flex-col gap-2 text-sm">
-                <li>
-                  <Link href="/about" className="text-ink hover:text-cobalt">
-                    About
-                  </Link>
-                </li>
                 <li>
                   <Link
                     href="/privacy"
