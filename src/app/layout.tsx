@@ -64,11 +64,11 @@ export default function RootLayout({
       className={`${bricolage.variable} ${instrumentSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <header className="border-b-2 border-cobalt bg-ink">
+        <header className="border-b-2 border-cobalt-glow bg-gradient-to-b from-header to-[#141d33] shadow-[0_4px_24px_#4a47f040]">
           <MainNav />
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-rule bg-card">
+        <footer className="border-t border-rule bg-gradient-to-b from-paper-warm to-paper">
           <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-10 sm:grid-cols-[2fr_1fr_1fr_1fr]">
             <div>
               <p className="font-display text-lg font-semibold tracking-tight text-ink">
@@ -78,7 +78,7 @@ export default function RootLayout({
                 Weekly AI practice matched to the modules you&rsquo;re actually
                 taking. Free tools only, built for UK undergraduates.
               </p>
-              <p className="mt-4 max-w-xs border-l-2 border-cobalt pl-3 text-xs leading-relaxed text-ink-muted">
+              <p className="mt-4 max-w-xs border-l-2 border-cobalt-glow pl-3 text-xs leading-relaxed text-ink-muted">
                 Fluent helps you learn to use AI well inside your degree. It
                 never completes assessed work for you.
               </p>

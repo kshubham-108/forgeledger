@@ -8,16 +8,16 @@ import { advanceSourceLabels } from "@/lib/seed/labels";
 */
 export function FrontierTicker() {
   return (
-    <section aria-label="This week from the frontier">
-      <div className="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 pb-2">
-        <h2 className="font-mono text-[11px] uppercase tracking-widest text-ink-muted">
+    <section aria-label="This week from the frontier" className="border-y border-cobalt-soft bg-card">
+      <div className="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 py-3">
+        <h2 className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
           This week from the frontier
         </h2>
         <p className="hidden font-mono text-[11px] text-ink-muted sm:block">
           Fluent watches the feeds. You get the skill.
         </p>
       </div>
-      <div className="ticker border-y border-rule bg-card">
+      <div className="ticker">
         <div className="ticker-track">
           {[0, 1].map((copy) => (
             <ul
@@ -27,7 +27,7 @@ export function FrontierTicker() {
             >
               {advances.map((advance) => (
                 <li
-                  key={advance.id}
+                  key={`${copy}-${advance.id}`}
                   className="flex items-baseline gap-2 whitespace-nowrap px-6 py-2.5"
                 >
                   <span className="font-mono text-[11px] uppercase tracking-wide text-cobalt">

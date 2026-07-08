@@ -1,22 +1,22 @@
 @import "tailwindcss";
 
 /*
-  Fluent design tokens — clean paper, near-black ink, one electric accent.
-  paper:  off-white ground
-  ink:    near-black text
-  cobalt: electric cobalt/indigo — the single accent
-  rule:   ruled-line dividers
-  card:   raised surfaces
+  Fluent design tokens — aligned with design.pen
 */
 @theme {
-  --color-paper: #f7f8f5;
-  --color-ink: #14181f;
-  --color-ink-muted: #3d434e;
-  --color-cobalt: #3230e6;
-  --color-cobalt-deep: #2321b4;
-  --color-cobalt-faint: #eaeafc;
-  --color-rule: #d8dcd3;
-  --color-card: #fdfefb;
+  --color-paper: #eef1ec;
+  --color-paper-warm: #e8ebe4;
+  --color-mist: #f6f7fc;
+  --color-ink: #0d1117;
+  --color-ink-muted: #5a6478;
+  --color-cobalt: #4a47f0;
+  --color-cobalt-deep: #2f2cc4;
+  --color-cobalt-glow: #7b78ff;
+  --color-cobalt-faint: #ecebff;
+  --color-cobalt-soft: #d4d2ff;
+  --color-header: #0a0f1e;
+  --color-rule: #c5cdd8;
+  --color-card: #ffffff;
 
   --font-display: var(--font-bricolage);
   --font-sans: var(--font-instrument-sans);
@@ -44,6 +44,28 @@ body {
 /* Cobalt is invisible against the dark header — use paper there instead */
 header :focus-visible {
   outline-color: var(--color-paper);
+}
+
+/* Hero backdrop washes — static radial blurs from design.pen */
+.hero-wash-a {
+  position: absolute;
+  top: -5rem;
+  right: 30%;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 50%;
+  filter: blur(60px);
+  background: radial-gradient(circle, #7b78ff30 0%, #4a47f000 70%);
+}
+.hero-wash-b {
+  position: absolute;
+  bottom: 0;
+  left: -2.5rem;
+  width: 22.5rem;
+  height: 22.5rem;
+  border-radius: 50%;
+  filter: blur(50px);
+  background: radial-gradient(circle, #4a47f022 0%, #4a47f000 70%);
 }
 
 /* Notebook margin rule: thin vertical accent line down the left of log blocks */
@@ -182,47 +204,6 @@ header :focus-visible {
   }
 }
 
-.backdrop-wash {
-  position: absolute;
-  top: -12%;
-  right: -6%;
-  width: 34rem;
-  height: 34rem;
-  border-radius: 50%;
-  filter: blur(80px);
-  background: color-mix(in srgb, var(--color-cobalt) 6%, transparent);
-  animation: wash-drift 20s ease-in-out infinite alternate;
-}
-@keyframes wash-drift {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(-2.5rem, 1.5rem, 0) scale(1.06);
-  }
-}
-
-/* Second, lower cobalt wash on a longer offset so the two never sync */
-.backdrop-wash-b {
-  position: absolute;
-  bottom: 4%;
-  left: -10%;
-  width: 30rem;
-  height: 30rem;
-  border-radius: 50%;
-  filter: blur(90px);
-  background: color-mix(in srgb, var(--color-cobalt) 5%, transparent);
-  animation: wash-drift-b 34s ease-in-out infinite alternate;
-}
-@keyframes wash-drift-b {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(3rem, -2rem, 0) scale(1.08);
-  }
-}
-
 /*
   Backdrop glyphs: technical-drawing marginalia (dotted circle, dashed
   ring, crosshair, asterisk...) floating on long, staggered loops.
@@ -284,8 +265,6 @@ header :focus-visible {
   .word-in,
   .loop-connector,
   .backdrop-rules,
-  .backdrop-wash,
-  .backdrop-wash-b,
   .glyph-float,
   .glyph-drift,
   .glyph-spin,

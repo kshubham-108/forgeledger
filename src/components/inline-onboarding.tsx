@@ -40,8 +40,8 @@ export function InlineOnboarding() {
 
   if (profile !== null) {
     return (
-      <div className="border-2 border-ink bg-card px-5 py-6">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+      <div className="rounded-md border-2 border-cobalt bg-card p-6 shadow-[0_8px_32px_-4px_#4a47f025]">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-glow">
           You&apos;re set up
         </p>
         <p className="mt-3 font-display text-xl font-semibold text-ink">
@@ -98,8 +98,8 @@ export function InlineOnboarding() {
   }
 
   return (
-    <div className="border-2 border-ink bg-card px-5 py-6">
-      <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+    <div className="rounded-md border-2 border-cobalt bg-card p-6 shadow-[0_8px_32px_-4px_#4a47f025]">
+      <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-glow">
         Start free · a minute
       </p>
 

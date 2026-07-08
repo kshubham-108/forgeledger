@@ -27,14 +27,14 @@ export function AuthNav() {
 
   if (user === null) {
     return (
-      <Link href="/auth/sign-in" className="text-paper/75 hover:text-paper">
+      <Link href="/auth/sign-in" className="text-cobalt-glow hover:text-paper">
         Sign in
       </Link>
     );
   }
 
   return (
-    <Link href="/dashboard" className="text-cobalt hover:text-paper">
+    <Link href="/dashboard" className="text-cobalt-glow hover:text-paper">
       My Dashboard
     </Link>
   );

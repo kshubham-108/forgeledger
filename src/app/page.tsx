@@ -10,7 +10,7 @@ const FrontierTicker = dynamic(
   {
     loading: () => (
       <div className="border-y border-rule bg-card py-3" aria-hidden="true">
-        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-rule" />
+        <div className="mx-auto h-4 w-full max-w-5xl animate-pulse px-6 bg-cobalt-soft" />
       </div>
     ),
   },
@@ -72,8 +72,6 @@ function Backdrop() {
       className="pointer-events-none absolute inset-0 overflow-hidden"
     >
       <div className="backdrop-rules absolute inset-0" />
-      <div className="backdrop-wash" />
-      <div className="backdrop-wash-b" />
 
       {/* Dotted circle — upper middle, slow clockwise spin */}
       <svg
@@ -191,6 +189,18 @@ function Backdrop() {
   );
 }
 
+function HeroBackdrop() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden opacity-90"
+    >
+      <div className="hero-wash-a" />
+      <div className="hero-wash-b" />
+    </div>
+  );
+}
+
 function StructuredData() {
   const organization = {
     "@context": "https://schema.org",
@@ -235,9 +245,11 @@ export default function LandingPage() {
       <Backdrop />
 
       {/* Hero + inline onboarding */}
-      <section className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1fr_22rem]">
+      <section className="relative overflow-hidden">
+        <HeroBackdrop />
+        <div className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1fr_22rem]">
         <div className="stagger">
-          <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-cobalt-deep">
             For UK undergraduates
           </p>
           <h1 className="mt-4 max-w-2xl text-balance font-display text-4xl font-semibold leading-[1.08] text-ink sm:text-6xl lg:text-[4rem]">
@@ -253,7 +265,7 @@ export default function LandingPage() {
           <p className="mt-6">
             <GatedLink
               href="/builds/psych-literature-pipeline"
-              className="font-mono text-xs text-cobalt hover:text-cobalt-deep"
+              className="font-mono text-xs text-cobalt-glow hover:text-cobalt-deep"
             >
               See an example build &rarr;
             </GatedLink>
@@ -261,6 +273,7 @@ export default function LandingPage() {
         </div>
         <div className="lg:pt-2">
           <LazyInlineOnboarding />
+        </div>
         </div>
       </section>
 
@@ -279,11 +292,11 @@ export default function LandingPage() {
           it to your modules, and you practise it the same week.
         </p>
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-0">
-          <div className="flex-1 border border-rule bg-card px-5 py-5">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+          <div className="flex-1 rounded-sm border border-cobalt-soft border-l-[3px] border-l-cobalt-soft bg-card px-5 py-5 shadow-[0_2px_12px_-2px_#4a47f018]">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
               01 · A new advance lands
             </p>
-            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+            <p className="mt-3 text-sm leading-snug text-ink">
               Deep-research agents can now run 30-minute multi-source
               investigations unattended.
             </p>
@@ -292,11 +305,11 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
-          <div className="flex-1 border border-rule bg-card px-5 py-5">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+          <div className="flex-1 rounded-sm border border-cobalt-soft border-l-[3px] border-l-cobalt-soft bg-card px-5 py-5 shadow-[0_2px_12px_-2px_#4a47f018]">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
               02 · Matched to your module
             </p>
-            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+            <p className="mt-3 text-sm leading-snug text-ink">
               Sources and Methods in Modern History — a module you&rsquo;re
               taking this term.
             </p>
@@ -305,11 +318,11 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
-          <div className="flex-1 border border-rule bg-card px-5 py-5">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
+          <div className="flex-1 rounded-sm border border-cobalt-soft border-l-[3px] border-l-cobalt-soft bg-card px-5 py-5 shadow-[0_2px_12px_-2px_#4a47f018]">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt-deep">
               03 · You practise it this week
             </p>
-            <p className="mt-3 text-sm font-medium leading-snug text-ink">
+            <p className="mt-3 text-sm leading-snug text-ink">
               Map a historiographical debate with a research agent — 25
               minutes, free tools.
             </p>
@@ -326,7 +339,7 @@ export default function LandingPage() {
       </section>
 
       {/* The teaching gap — HEPI 2025 */}
-      <section className="relative border-y border-rule bg-cobalt-faint">
+      <section className="relative border-y border-cobalt-soft bg-gradient-to-b from-cobalt-faint via-cobalt-soft to-mist">
         <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 py-12 sm:grid-cols-[auto_auto_1fr] sm:items-center sm:gap-12">
           <div>
             <p className="font-display text-5xl font-semibold text-ink">92%</p>
@@ -335,7 +348,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div>
-            <p className="font-display text-5xl font-semibold text-cobalt">
+            <p className="font-display text-5xl font-semibold text-cobalt-deep">
               36%
             </p>
             <p className="mt-1 max-w-[12rem] text-xs leading-relaxed text-ink-muted">
@@ -348,7 +361,7 @@ export default function LandingPage() {
               at term pace; the frontier moves weekly. Fluent closes the gap
               with practice inside your modules, not another lecture.
             </p>
-            <p className="mt-2 font-mono text-[11px] text-ink-muted">
+            <p className="mt-2 font-mono text-[11px] text-cobalt-deep">
               HEPI Student Generative AI Survey 2025
             </p>
           </div>
@@ -356,13 +369,13 @@ export default function LandingPage() {
       </section>
 
       {/* Why trust Fluent — plain commitments, not badges */}
-      <section className="relative border-y border-rule bg-card">
+      <section className="relative border-y border-cobalt-soft bg-mist">
         <div className="mx-auto w-full max-w-5xl px-6 py-16">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Built to be trusted
           </h2>
           <div className="mt-8 grid gap-8 sm:grid-cols-3">
-            <div>
+            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
               <h3 className="text-sm font-semibold text-ink">
                 Free tools only
               </h3>
@@ -371,7 +384,7 @@ export default function LandingPage() {
                 asked to pay to keep up with classmates who can.
               </p>
             </div>
-            <div>
+            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
               <h3 className="text-sm font-semibold text-ink">
                 Never does your work
               </h3>
@@ -381,7 +394,7 @@ export default function LandingPage() {
                 steps — not a policy page.
               </p>
             </div>
-            <div>
+            <div className="rounded-sm border border-cobalt-soft bg-card p-5">
               <h3 className="text-sm font-semibold text-ink">
                 Your log stays yours
               </h3>
@@ -396,9 +409,10 @@ export default function LandingPage() {
 
       {/* FAQ — real objections, question-format headings, backed by JSON-LD */}
       <section
-        className="relative mx-auto w-full max-w-5xl px-6 py-16"
+        className="relative bg-paper-warm"
         aria-labelledby="faq-heading"
       >
+        <div className="mx-auto w-full max-w-5xl px-6 py-16">
         <h2
           id="faq-heading"
           className="font-mono text-xs uppercase tracking-widest text-ink"
@@ -415,23 +429,24 @@ export default function LandingPage() {
             </div>
           ))}
         </dl>
+        </div>
       </section>
 
       {/* Closing CTA — one action, restated value */}
-      <section className="relative border-t border-rule">
+      <section className="relative border-t border-cobalt-deep bg-gradient-to-br from-header to-[#1a2550]">
         <div className="mx-auto flex w-full max-w-5xl flex-col items-start gap-6 px-6 py-16 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="max-w-md text-balance font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
+            <h2 className="max-w-md text-balance font-display text-2xl font-semibold leading-snug text-paper sm:text-3xl">
               This week&rsquo;s advances are already matched to modules.
             </h2>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-ink-muted">
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-paper/70">
               Pick your university and modules above — your first 25-minute
               build is ready today.
             </p>
           </div>
           <GatedLink
             href="/builds/psych-literature-pipeline"
-            className="shrink-0 rounded-sm bg-cobalt px-6 py-3 text-sm font-medium text-white hover:bg-cobalt-deep"
+            className="shrink-0 rounded-sm bg-gradient-to-b from-cobalt-glow via-cobalt to-cobalt-deep px-6 py-3 text-sm font-medium text-white shadow-[0_4px_16px_#4a47f050] hover:opacity-95"
           >
             Try an example build
           </GatedLink>
