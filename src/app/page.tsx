@@ -58,141 +58,6 @@ const ROTATING_SUBJECTS = [
   "Medicine",
 ];
 
-/*
-  Quiet animated backdrop: ruled paper drifting very slowly, two soft
-  cobalt washes floating on long offsets, a signal sweep line passing
-  through every few seconds, and a scatter of technical-drawing glyphs
-  (dotted circle, dashed ring, crosshairs, asterisk, diamond, orbit dot)
-  floating on staggered loops. Decorative, behind the content, frozen for
-  prefers-reduced-motion.
-*/
-function Backdrop() {
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 overflow-hidden"
-    >
-      <div className="backdrop-rules absolute inset-0" />
-      <div className="backdrop-wash" />
-      <div className="backdrop-wash-b" />
-      <div className="backdrop-sweep" />
-
-      {/* Dotted circle — upper middle, slow clockwise spin */}
-      <svg
-        className="glyph glyph-spin"
-        style={{ top: "7%", left: "51%", width: 64, height: 64, animationDuration: "42s" }}
-        viewBox="0 0 64 64"
-      >
-        <circle
-          cx="32"
-          cy="32"
-          r="27"
-          fill="none"
-          stroke="var(--color-cobalt)"
-          strokeWidth="1.5"
-          strokeDasharray="0.1 8.5"
-          strokeLinecap="round"
-          opacity="0.16"
-        />
-      </svg>
-
-      {/* Crosshair — left margin of the hero, gentle float */}
-      <svg
-        className="glyph glyph-float"
-        style={{ top: "30%", left: "3%", width: 26, height: 26, animationDuration: "17s" }}
-        viewBox="0 0 26 26"
-      >
-        <g stroke="var(--color-ink)" strokeWidth="1.2" opacity="0.14">
-          <line x1="13" y1="0" x2="13" y2="26" />
-          <line x1="0" y1="13" x2="26" y2="13" />
-          <circle cx="13" cy="13" r="5" fill="none" />
-        </g>
-      </svg>
-
-      {/* Orbit dot — right edge, dot circles a faint track */}
-      <svg
-        className="glyph glyph-spin"
-        style={{ top: "22%", right: "2%", width: 72, height: 72, animationDuration: "24s" }}
-        viewBox="0 0 72 72"
-      >
-        <circle
-          cx="36"
-          cy="36"
-          r="30"
-          fill="none"
-          stroke="var(--color-ink)"
-          strokeWidth="1"
-          opacity="0.1"
-        />
-        <circle cx="36" cy="6" r="3" fill="var(--color-cobalt)" opacity="0.3" />
-      </svg>
-
-      {/* Asterisk — drifts near the ticker, slight rotation */}
-      <svg
-        className="glyph glyph-drift"
-        style={{ top: "44%", left: "8%", width: 32, height: 32, animationDuration: "26s" }}
-        viewBox="0 0 32 32"
-      >
-        <g
-          stroke="var(--color-cobalt)"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          opacity="0.18"
-        >
-          <line x1="16" y1="3" x2="16" y2="29" />
-          <line x1="4.7" y1="9.5" x2="27.3" y2="22.5" />
-          <line x1="4.7" y1="22.5" x2="27.3" y2="9.5" />
-        </g>
-      </svg>
-
-      {/* Diamond (square at 45°) — right margin, mid-page */}
-      <svg
-        className="glyph glyph-float"
-        style={{ top: "52%", right: "5%", width: 40, height: 40, animationDuration: "21s", animationDelay: "-7s" }}
-        viewBox="0 0 40 40"
-      >
-        <path
-          d="M20 3 L37 20 L20 37 L3 20 Z"
-          fill="none"
-          stroke="var(--color-ink)"
-          strokeWidth="1.2"
-          opacity="0.12"
-        />
-      </svg>
-
-      {/* Dashed ring — lower left, slow counter-clockwise spin */}
-      <svg
-        className="glyph glyph-spin-reverse"
-        style={{ top: "68%", left: "4%", width: 80, height: 80, animationDuration: "52s" }}
-        viewBox="0 0 80 80"
-      >
-        <circle
-          cx="40"
-          cy="40"
-          r="34"
-          fill="none"
-          stroke="var(--color-cobalt)"
-          strokeWidth="1.4"
-          strokeDasharray="10 8"
-          opacity="0.14"
-        />
-      </svg>
-
-      {/* Small plus — lower middle, gentle drift */}
-      <svg
-        className="glyph glyph-drift"
-        style={{ top: "82%", left: "47%", width: 22, height: 22, animationDuration: "19s", animationDelay: "-4s" }}
-        viewBox="0 0 22 22"
-      >
-        <g stroke="var(--color-cobalt)" strokeWidth="1.6" strokeLinecap="round" opacity="0.16">
-          <line x1="11" y1="2" x2="11" y2="20" />
-          <line x1="2" y1="11" x2="20" y2="11" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
 function StructuredData() {
   const organization = {
     "@context": "https://schema.org",
@@ -232,13 +97,12 @@ function StructuredData() {
 
 export default function LandingPage() {
   return (
-    <div className="relative">
+    <div>
       <StructuredData />
-      <Backdrop />
 
       {/* Hero + inline onboarding */}
-      <section className="relative mx-auto grid w-full max-w-5xl gap-12 px-6 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1fr_22rem]">
-        <div className="stagger">
+      <section className="mx-auto grid w-full max-w-5xl gap-12 px-6 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1fr_22rem]">
+        <div>
           <p className="font-mono text-xs uppercase tracking-widest text-cobalt">
             For UK undergraduates
           </p>
@@ -293,7 +157,7 @@ export default function LandingPage() {
               Vendor update · 27 Jun 2026
             </p>
           </div>
-          <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
+          <div className="hidden h-px w-10 shrink-0 self-center border-t border-dashed border-cobalt/50 sm:block" />
           <div className="flex-1 border border-rule bg-card px-5 py-5">
             <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
               02 · Matched to your module
@@ -306,7 +170,7 @@ export default function LandingPage() {
               HIST2260 · University of Manchester
             </p>
           </div>
-          <div className="loop-connector hidden h-px w-10 shrink-0 self-center sm:block" />
+          <div className="hidden h-px w-10 shrink-0 self-center border-t border-dashed border-cobalt/50 sm:block" />
           <div className="flex-1 border border-rule bg-card px-5 py-5">
             <p className="font-mono text-[11px] uppercase tracking-widest text-cobalt">
               03 · You practise it this week

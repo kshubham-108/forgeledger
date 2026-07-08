@@ -167,7 +167,7 @@ export default async function BuildPage({ params }: PageProps) {
       </section>
 
       {/* The steps are a genuine sequence — numbering carries meaning */}
-      <section className="margin-ruled mt-10">
+      <section className="mt-10">
         <h2 className="border-b-2 border-ink pb-2 font-mono text-xs uppercase tracking-widest text-ink">
           The build
         </h2>

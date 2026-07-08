@@ -138,7 +138,7 @@ export function InlineOnboarding() {
 
       {/* 02 — Course, revealed once a university is picked */}
       {university !== null ? (
-        <fieldset className="rise-in mt-6">
+        <fieldset className="mt-6">
           <legend className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">02</span>
             What course are you doing?
@@ -168,7 +168,7 @@ export function InlineOnboarding() {
 
       {/* Sign-up gate — only when Supabase is configured and no session yet */}
       {university !== null && discipline !== null && needsAuthGate ? (
-        <div className="rise-in mt-6">
+        <div className="mt-6">
           <p className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">03</span>
             Verify your student email
@@ -197,7 +197,7 @@ export function InlineOnboarding() {
 
       {/* 03/04 — Modules, revealed once a course is picked (demo mode, or already signed in) */}
       {university !== null && discipline !== null && !needsAuthGate ? (
-        <fieldset className="rise-in mt-6">
+        <fieldset className="mt-6">
           <legend className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">03</span>
             Tick your modules
@@ -231,7 +231,7 @@ export function InlineOnboarding() {
 
       {/* 04 — Hours, revealed once a module is ticked */}
       {moduleIds.length > 0 ? (
-        <div className="rise-in mt-6">
+        <div className="mt-6">
           <p className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">04</span>
             Hours you can honestly give a week
@@ -257,7 +257,7 @@ export function InlineOnboarding() {
 
       {/* 05 — Optional snapshot + start, revealed with 04 */}
       {moduleIds.length > 0 ? (
-        <div className="rise-in mt-6">
+        <div className="mt-6">
           <p className="text-sm font-semibold text-ink">
             <span className="mr-2 font-mono text-xs text-cobalt">05</span>
             Optional: how confident are you today?

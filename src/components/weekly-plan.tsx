@@ -226,7 +226,7 @@ export function WeeklyPlan() {
 
       <SnapshotSection snapshot={profile.snapshot} />
 
-      <section className="margin-ruled mt-10">
+      <section className="mt-10">
         <div className="border-b-2 border-ink pb-2">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Builds matched to your modules
@@ -293,7 +293,7 @@ export function WeeklyPlan() {
         )}
       </section>
 
-      <section className="margin-ruled mt-10">
+      <section className="mt-10">
         <div className="border-b-2 border-ink pb-2">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Your build log
@@ -303,7 +303,7 @@ export function WeeklyPlan() {
       </section>
 
       {/* Latest in your field: the frontier feed, filtered to your modules */}
-      <section className="margin-ruled mt-10">
+      <section className="mt-10">
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
           <h2 className="font-mono text-xs uppercase tracking-widest text-ink">
             Latest in your field
