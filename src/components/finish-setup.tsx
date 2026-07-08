@@ -89,7 +89,7 @@ export function FinishSetup({ profile }: { profile: Profile }) {
 
       {moduleIds.length > 0 ? (
         <>
-          <div className="mt-6">
+          <div className="rise-in mt-6">
             <p className="text-sm font-semibold text-ink">
               Hours you can honestly give a week
             </p>
@@ -111,7 +111,7 @@ export function FinishSetup({ profile }: { profile: Profile }) {
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="rise-in mt-6">
             <p className="text-sm font-semibold text-ink">
               Optional: how confident are you today?
             </p>
